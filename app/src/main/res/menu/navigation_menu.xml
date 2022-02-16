@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/main"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home"
+            android:title="Home"
+            android:checked="true" />
+        <item
+            android:id="@+id/dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/item3"
+            android:icon="@drawable/ic_shopping"
+            android:title="Compras" />
+    </group>
+
+    <group
+        android:id="@+id/session"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/session_subtitle"
+            android:title="Sesión">
+            <menu>
+                <item
+                    android:id="@+id/logout"
+                    android:icon="@drawable/ic_logout"
+                    android:title="Cerrar sesión" />
+            </menu>
+        </item>
+    </group>
+
+    <group
+        android:id="@+id/adjustments"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/settings_subtitle"
+            android:title="Sesión">
+            <menu>
+                <item
+                    android:id="@+id/settings"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Configuración" />
+            </menu>
+        </item>
+    </group>
+
+    <group
+        android:id="@+id/information"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/information_subtitle"
+            android:title="Información">
+            <menu>
+                <item
+                    android:id="@+id/about_app"
+                    android:icon="@drawable/ic_help"
+                    android:title="Ayuda" />
+
+                <item
+                    android:id="@+id/about_us"
+                    android:icon="@drawable/ic_about_us"
+                    android:title="Sobre nosotros" />
+            </menu>
+        </item>
+    </group>
+</menu>

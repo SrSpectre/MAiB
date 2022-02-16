@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/login_fragment">
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.coderipper.maib.usecases.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/to_sign_in"
+            app:destination="@id/sign_in_fragment"/>
+
+        <action
+            android:id="@+id/to_home"
+            app:destination="@id/main_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/sign_in_fragment"
+        android:name="com.coderipper.maib.usecases.signin.SignInFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_sign_in">
+
+        <action
+            android:id="@+id/to_home"
+            app:destination="@id/main_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.coderipper.maib.usecases.main.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/to_login"
+            app:destination="@id/login_fragment"/>
+
+        <action
+            android:id="@+id/to_categories"
+            app:destination="@id/categories_fragment"/>
+
+        <action
+            android:id="@+id/to_create"
+            app:destination="@id/create_product"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/categories_fragment"
+        android:name="com.coderipper.maib.usecases.categories.CategoriesFragment"
+        android:label="Categories"
+        tools:layout="@layout/fragment_categories">
+
+        <action
+            android:id="@+id/to_search"
+            app:destination="@id/search_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.coderipper.maib.usecases.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search">
+    </fragment>
+
+    <fragment
+        android:id="@+id/create_product"
+        android:name="com.coderipper.maib.usecases.create.CreateProductFragment"
+        android:label="Create product"
+        tools:layout="@layout/fragment_create_product">
+    </fragment>
+
+</navigation>
