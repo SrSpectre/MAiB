@@ -2,13 +2,13 @@
     <!-- Base application theme. -->
     <style name="Theme.Maib" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/peace</item>
-        <item name="colorPrimaryVariant">@color/peace</item>
-        <item name="colorOnPrimary">@color/peace</item>
+        <item name="colorPrimary">@color/primary_800</item>
+        <item name="colorPrimaryVariant">@color/primary_900</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/white</item>
-        <item name="colorSecondaryVariant">@color/white</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/secondary_50</item>
+        <item name="colorSecondaryVariant">@color/secondary_100</item>
+        <item name="colorOnSecondary">@color/primary_900</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->

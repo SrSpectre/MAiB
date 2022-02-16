@@ -97,7 +97,7 @@
                         android:layout_marginVertical="12dp"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:textColor="@color/peace"
+                        android:textColor="?attr/colorSecondaryVariant"
                         android:textAlignment="center"
                         android:text="¡Bienvenida de nuevo Anny!"
                         app:layout_constraintTop_toTopOf="parent"

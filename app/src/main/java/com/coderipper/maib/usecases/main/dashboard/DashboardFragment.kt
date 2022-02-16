@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentDashboardBinding
 import com.coderipper.maib.databinding.FragmentHomeBinding
 import com.coderipper.maib.databinding.FragmentMainBinding
 import com.coderipper.maib.usecases.main.MainFragmentDirections
+import com.coderipper.maib.usecases.main.dashboard.adapter.SectionsPagerAdapter
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 
 /**
  * A simple [Fragment] subclass.
@@ -37,6 +40,21 @@ class DashboardFragment : Fragment() {
             createProductFab.setOnClickListener {
                 activity?.findNavController(R.id.nav_host_fragment)?.navigate(MainFragmentDirections.toCreate())
             }
+
+            sectionsPager.apply {
+                adapter = SectionsPagerAdapter(arrayListOf("Mis productos", "Siguiendo"))
+                clipToPadding = false
+                clipChildren = false
+                offscreenPageLimit = 2
+                getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
+            }
+
+            TabLayoutMediator(sectionsTab, sectionsPager) { tab, position ->
+                when (position) {
+                    0 -> tab.text = "Mis productos"
+                    1 -> tab.text = "Siguiendo"
+                }
+            }.attach()
         }
     }
 

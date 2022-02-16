@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/peace"
+            android:textColor="?attr/colorSecondaryVariant"
             android:text="¡Elige tu avatar!"
             app:layout_constraintTop_toTopOf="@+id/avatar_layout"
             app:layout_constraintStart_toStartOf="parent"

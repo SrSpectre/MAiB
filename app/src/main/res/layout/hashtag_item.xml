@@ -5,6 +5,6 @@
     android:layout_margin="6dp"
     android:textSize="12sp"
     android:textStyle="bold"
-    android:textColor="@color/peace"
+    android:textColor="?attr/colorSecondaryVariant"
     android:text="#vestido"
     xmlns:android="http://schemas.android.com/apk/res/android"/>
