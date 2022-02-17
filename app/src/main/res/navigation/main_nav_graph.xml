@@ -27,4 +27,25 @@
             app:destination="@id/home_fragment"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="com.coderipper.maib.usecases.main.about.AboutFragment"
+        android:label="About"
+        tools:layout="@layout/fragment_about">
+    </fragment>
+
+    <fragment
+        android:id="@+id/help_fragment"
+        android:name="com.coderipper.maib.usecases.main.about.AboutFragment"
+        android:label="Help"
+        tools:layout="@layout/fragment_about">
+    </fragment>
+
+    <action
+        android:id="@+id/to_about"
+        app:destination="@id/about_fragment"/>
+
+    <action
+        android:id="@+id/to_help"
+        app:destination="@id/help_fragment"/>
 </navigation>

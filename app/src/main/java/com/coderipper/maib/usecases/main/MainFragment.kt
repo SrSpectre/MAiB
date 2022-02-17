@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentMainBinding
 import com.coderipper.maib.usecases.main.dashboard.DashboardFragmentDirections
@@ -64,6 +65,14 @@ class MainFragment : Fragment() {
                     R.id.settings -> {
                         sectionText.text = "Configuración"
                         navMainFragment.findNavController().navigate(HomeFragmentDirections.toDashboard())
+                    }
+                    R.id.help -> {
+                        sectionText.text = "Ayuda"
+                        navMainFragment.findNavController().navigate(MainNavGraphDirections.toHelp())
+                    }
+                    R.id.about_us -> {
+                        sectionText.text = "Sobre nosotros"
+                        navMainFragment.findNavController().navigate(MainNavGraphDirections.toAbout())
                     }
                     R.id.logout -> {
                         root.findNavController().navigate(MainFragmentDirections.toLogin())

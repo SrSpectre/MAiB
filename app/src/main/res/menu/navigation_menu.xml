@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group
         android:id="@+id/main"
-        android:checkableBehavior="single">
+        android:checkableBehavior="none">
         <item
             android:id="@+id/home"
             android:icon="@drawable/ic_home"
@@ -13,14 +13,14 @@
             android:icon="@drawable/ic_dashboard"
             android:title="Dashboard" />
         <item
-            android:id="@+id/item3"
-            android:icon="@drawable/ic_shopping"
-            android:title="Compras" />
+            android:id="@+id/account"
+            android:icon="@drawable/ic_account"
+            android:title="Cuenta" />
     </group>
 
     <group
         android:id="@+id/session"
-        android:checkableBehavior="single">
+        android:checkableBehavior="none">
         <item
             android:id="@+id/session_subtitle"
             android:title="Sesión">
@@ -35,7 +35,7 @@
 
     <group
         android:id="@+id/adjustments"
-        android:checkableBehavior="single">
+        android:checkableBehavior="none">
         <item
             android:id="@+id/settings_subtitle"
             android:title="Sesión">
@@ -50,13 +50,13 @@
 
     <group
         android:id="@+id/information"
-        android:checkableBehavior="single">
+        android:checkableBehavior="none">
         <item
             android:id="@+id/information_subtitle"
             android:title="Información">
             <menu>
                 <item
-                    android:id="@+id/about_app"
+                    android:id="@+id/help"
                     android:icon="@drawable/ic_help"
                     android:title="Ayuda" />
 

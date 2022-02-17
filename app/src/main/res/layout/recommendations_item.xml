@@ -44,7 +44,7 @@
             app:singleSelection="false"
             app:layout_constraintTop_toBottomOf="@+id/recommendation_image"
             app:layout_constraintStart_toStartOf="@+id/recommendation_image"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/recommendation_image"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.google.android.material.button.MaterialButton

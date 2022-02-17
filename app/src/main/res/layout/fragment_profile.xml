@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".usecases.profile.ProfileFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="enterAlways|exitUntilCollapsed">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/background"
+                android:scaleType="centerCrop" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/relax" />
+
+            <include layout="@layout/logo"/>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/home_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="0dp"
+                app:navigationIconTint="@color/white"
+                app:navigationIcon="@drawable/ic_close"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/avatar_btn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center|top"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/avatar_selected"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/avatar1"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:textAlignment="center"
+                    android:text="Lissa Roberts"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/description_text"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:textAlignment="center"
+                    android:text="Hola, soy una diseñadora de ropa para publico femenino."
+                    app:layout_constraintTop_toBottomOf="@+id/name_text"
+                    app:layout_constraintStart_toStartOf="@+id/name_text"
+                    app:layout_constraintEnd_toStartOf="@+id/contact_title_text"
+                    app:layout_constraintBottom_toBottomOf="@+id/contact_text"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/contact_title_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="6dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:textAlignment="center"
+                    android:text="Contacto"
+                    app:layout_constraintTop_toTopOf="@+id/description_text"
+                    app:layout_constraintStart_toEndOf="@+id/description_text"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/contact_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:textAlignment="center"
+                    android:text="+52 XXXX XXXX 2574\nartloverXX@example.com"
+                    app:layout_constraintTop_toBottomOf="@+id/contact_title_text"
+                    app:layout_constraintStart_toStartOf="@+id/contact_title_text"
+                    app:layout_constraintEnd_toEndOf="@+id/contact_title_text"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/following_image"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="12dp"
+                    app:srcCompat="@drawable/ic_following"
+                    app:tint="?attr/colorSecondaryVariant"
+                    app:layout_constraintTop_toBottomOf="@+id/description_text"
+                    app:layout_constraintStart_toStartOf="@+id/description_text"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/following_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:text="23,120"
+                    app:layout_constraintTop_toTopOf="@+id/following_image"
+                    app:layout_constraintStart_toEndOf="@+id/following_image"
+                    app:layout_constraintBottom_toBottomOf="@+id/following_image"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/rate_image"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="12dp"
+                    app:srcCompat="@drawable/ic_rate"
+                    app:tint="?attr/colorSecondaryVariant"
+                    app:layout_constraintTop_toTopOf="@+id/following_image"
+                    app:layout_constraintStart_toEndOf="@+id/following_text"
+                    app:layout_constraintBottom_toBottomOf="@+id/following_image"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/rate_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:text="4.6"
+                    app:layout_constraintTop_toTopOf="@+id/rate_image"
+                    app:layout_constraintStart_toEndOf="@+id/rate_image"
+                    app:layout_constraintBottom_toBottomOf="@+id/rate_image"/>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/products_list"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/following_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/more_artist_text"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/big_products_item"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/more_artist_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorSecondaryVariant"
+                    android:text="Aquí tienes más artistas"
+                    app:layout_constraintTop_toBottomOf="@+id/products_list"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/more_artist_list"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/more_artist_list"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@+id/more_artist_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/mini_artist_item"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -40,6 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:elevation="0dp"
+                    app:navigationIconTint="@color/white"
                     app:navigationIcon="@drawable/ic_menu"/>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
