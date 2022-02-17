@@ -10,10 +10,6 @@
         android:name="com.coderipper.maib.usecases.main.home.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/to_dashboard"
-            app:destination="@id/dashboard_fragment"/>
     </fragment>
 
     <fragment
@@ -21,10 +17,19 @@
         android:name="com.coderipper.maib.usecases.main.dashboard.DashboardFragment"
         android:label="Dashboard"
         tools:layout="@layout/fragment_dashboard">
+    </fragment>
 
-        <action
-            android:id="@+id/to_home"
-            app:destination="@id/home_fragment"/>
+    <fragment
+        android:id="@+id/account_fragment"
+        android:name="com.coderipper.maib.usecases.main.account.AccountFragment"
+        android:label="Account"
+        tools:layout="@layout/fragment_account">
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.coderipper.maib.usecases.main.settings.SettingsFragment"
+        android:label="Settings">
     </fragment>
 
     <fragment
@@ -36,10 +41,26 @@
 
     <fragment
         android:id="@+id/help_fragment"
-        android:name="com.coderipper.maib.usecases.main.about.AboutFragment"
+        android:name="com.coderipper.maib.usecases.main.help.HelpFragment"
         android:label="Help"
-        tools:layout="@layout/fragment_about">
+        tools:layout="@layout/fragment_help">
     </fragment>
+
+    <action
+        android:id="@+id/to_dashboard"
+        app:destination="@id/dashboard_fragment"/>
+
+    <action
+        android:id="@+id/to_home"
+        app:destination="@id/home_fragment"/>
+
+    <action
+        android:id="@+id/to_account"
+        app:destination="@id/account_fragment"/>
+
+    <action
+        android:id="@+id/to_settings"
+        app:destination="@id/settings_fragment"/>
 
     <action
         android:id="@+id/to_about"

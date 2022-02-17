@@ -63,26 +63,26 @@
         app:fabSize="normal"
         app:layout_constraintStart_toStartOf="@+id/promotion_layout"
         app:layout_constraintTop_toBottomOf="@+id/recommendations_list"
-        app:layout_constraintEnd_toStartOf="@+id/wishlist_fab"/>
+        app:layout_constraintEnd_toStartOf="@+id/help_fab"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/wishlist_fab"
+        android:id="@+id/help_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_wishlist"
+        android:src="@drawable/ic_help"
         app:fabSize="normal"
         app:layout_constraintStart_toEndOf="@+id/categories_fab"
         app:layout_constraintTop_toTopOf="@+id/categories_fab"
-        app:layout_constraintEnd_toStartOf="@+id/following_fab"/>
+        app:layout_constraintEnd_toStartOf="@+id/settings_fab"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/following_fab"
+        android:id="@+id/settings_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_following"
+        android:src="@drawable/ic_settings"
         app:fabSize="normal"
-        app:layout_constraintStart_toEndOf="@+id/wishlist_fab"
-        app:layout_constraintTop_toTopOf="@+id/wishlist_fab"
+        app:layout_constraintStart_toEndOf="@+id/help_fab"
+        app:layout_constraintTop_toTopOf="@+id/help_fab"
         app:layout_constraintEnd_toStartOf="@+id/my_products_fab"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -91,8 +91,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_my_products"
         app:fabSize="normal"
-        app:layout_constraintStart_toEndOf="@+id/following_fab"
-        app:layout_constraintTop_toTopOf="@+id/following_fab"
+        app:layout_constraintStart_toEndOf="@+id/settings_fab"
+        app:layout_constraintTop_toTopOf="@+id/settings_fab"
         app:layout_constraintEnd_toEndOf="@+id/promotion_layout"/>
 
     <com.google.android.material.textview.MaterialTextView
@@ -109,28 +109,28 @@
         app:layout_constraintEnd_toEndOf="@+id/categories_fab"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/wishlist_text"
+        android:id="@+id/help_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
         android:textColor="?attr/colorSecondaryVariant"
         android:textAlignment="center"
-        android:text="Mi lista"
+        android:text="Ayuda"
         app:layout_constraintTop_toTopOf="@+id/categories_text"
-        app:layout_constraintStart_toStartOf="@+id/wishlist_fab"
-        app:layout_constraintEnd_toEndOf="@+id/wishlist_fab"/>
+        app:layout_constraintStart_toStartOf="@+id/help_fab"
+        app:layout_constraintEnd_toEndOf="@+id/help_fab"/>
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/following_text"
+        android:id="@+id/settings_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
         android:textColor="?attr/colorSecondaryVariant"
         android:textAlignment="center"
-        android:text="Siguiendo"
+        android:text="Configuración"
         app:layout_constraintTop_toTopOf="@+id/categories_text"
-        app:layout_constraintStart_toStartOf="@+id/following_fab"
-        app:layout_constraintEnd_toEndOf="@+id/following_fab"/>
+        app:layout_constraintStart_toStartOf="@+id/settings_fab"
+        app:layout_constraintEnd_toEndOf="@+id/settings_fab"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/my_products_text"

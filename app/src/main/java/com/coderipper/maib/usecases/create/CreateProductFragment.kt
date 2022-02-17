@@ -11,6 +11,8 @@ import com.coderipper.maib.databinding.FragmentCreateProductBinding
 import com.coderipper.maib.databinding.FragmentDashboardBinding
 import com.coderipper.maib.databinding.FragmentHomeBinding
 import com.coderipper.maib.databinding.FragmentMainBinding
+import com.coderipper.maib.usecases.create.colors.CreateColorsFragment
+import com.coderipper.maib.usecases.create.sizes.CreateSizesFragment
 import com.coderipper.maib.usecases.main.MainFragmentDirections
 import com.google.android.material.snackbar.Snackbar
 
@@ -37,6 +39,16 @@ class CreateProductFragment : Fragment() {
         binding.run {
             closeButton.setOnClickListener {
                 root.findNavController().popBackStack()
+            }
+
+            addSizeButton.setOnClickListener {
+                val sizesFragment = CreateSizesFragment.newInstance()
+                sizesFragment.show(parentFragmentManager, "Sizes Fragment")
+            }
+
+            addColorButton.setOnClickListener {
+                val colorsFragment = CreateColorsFragment.newInstance()
+                colorsFragment.show(parentFragmentManager, "Colors Fragment")
             }
         }
     }

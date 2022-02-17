@@ -133,7 +133,7 @@
             tools:listitem="@layout/sizes_item"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/add_size_btn"
+            android:id="@+id/add_size_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -154,7 +154,7 @@
             android:textColor="?attr/colorSecondaryVariant"
             android:textStyle="bold"
             android:text="Colores"
-            app:layout_constraintTop_toBottomOf="@+id/add_size_btn"
+            app:layout_constraintTop_toBottomOf="@+id/add_size_button"
             app:layout_constraintStart_toStartOf="@+id/sizes_text"
             app:layout_constraintEnd_toEndOf="@+id/sizes_text"/>
 
@@ -177,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="72dp"
-            android:text="Agregar tamaño"
+            android:text="Agregar color"
             android:textColor="?attr/colorSecondary"
             android:textSize="15sp"
             android:textAllCaps="false"

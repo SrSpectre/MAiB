@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.widget.ImageViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentMainBinding
-import com.coderipper.maib.usecases.main.dashboard.DashboardFragmentDirections
-import com.coderipper.maib.usecases.main.home.HomeFragmentDirections
+import com.coderipper.maib.utils.getIntValue
+import com.coderipper.maib.utils.getStringValue
+import com.google.android.material.textview.MaterialTextView
+
 
 /**
  * A simple [Fragment] subclass.
@@ -35,6 +39,12 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.run {
+            val header = menuNavigation.getHeaderView(0)
+            header.findViewById<AppCompatImageView>(R.id.avatar_selected).setBackgroundResource(
+                getIntValue(requireActivity(), "avatar")
+            )
+            header.findViewById<MaterialTextView>(R.id.user_name_text).text = getStringValue(requireActivity(), "name")
+
             homeToolbar.setNavigationOnClickListener {
                 drawerLayout.open()
             }
@@ -56,15 +66,19 @@ class MainFragment : Fragment() {
                 when (menuItem.itemId) {
                     R.id.home -> {
                         sectionText.text = "¡Bienvenida de nuevo Anny!"
-                        navMainFragment.findNavController().navigate(DashboardFragmentDirections.toHome())
+                        navMainFragment.findNavController().navigate(MainNavGraphDirections.toHome())
                     }
                     R.id.dashboard -> {
                         sectionText.text = "Tu información"
-                        navMainFragment.findNavController().navigate(HomeFragmentDirections.toDashboard())
+                        navMainFragment.findNavController().navigate(MainNavGraphDirections.toDashboard())
+                    }
+                    R.id.account -> {
+                        sectionText.text = "Tu cuenta"
+                        navMainFragment.findNavController().navigate(MainNavGraphDirections.toAccount())
                     }
                     R.id.settings -> {
                         sectionText.text = "Configuración"
-                        navMainFragment.findNavController().navigate(HomeFragmentDirections.toDashboard())
+                        navMainFragment.findNavController().navigate(MainNavGraphDirections.toSettings())
                     }
                     R.id.help -> {
                         sectionText.text = "Ayuda"

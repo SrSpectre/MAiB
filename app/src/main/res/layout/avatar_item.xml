@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.imageview.ShapeableImageView
+    android:id="@+id/avatar_img"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    android:layout_margin="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:elevation="4dp"
+    app:srcCompat="@drawable/avatar1"
+    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Maib.Circle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"/>

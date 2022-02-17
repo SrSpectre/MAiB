@@ -4,11 +4,12 @@
     android:layout_height="48dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/color_image"
         android:layout_width="48dp"
         android:layout_height="24dp"
         android:layout_marginStart="12dp"
-        android:background="?attr/colorSecondaryVariant"
+        android:background="#808080"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

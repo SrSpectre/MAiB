@@ -19,6 +19,21 @@
     </group>
 
     <group
+        android:id="@+id/adjustments"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/settings_subtitle"
+            android:title="Ajustes">
+            <menu>
+                <item
+                    android:id="@+id/settings"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Configuración" />
+            </menu>
+        </item>
+    </group>
+
+    <group
         android:id="@+id/session"
         android:checkableBehavior="none">
         <item
@@ -29,21 +44,6 @@
                     android:id="@+id/logout"
                     android:icon="@drawable/ic_logout"
                     android:title="Cerrar sesión" />
-            </menu>
-        </item>
-    </group>
-
-    <group
-        android:id="@+id/adjustments"
-        android:checkableBehavior="none">
-        <item
-            android:id="@+id/settings_subtitle"
-            android:title="Sesión">
-            <menu>
-                <item
-                    android:id="@+id/settings"
-                    android:icon="@drawable/ic_settings"
-                    android:title="Configuración" />
             </menu>
         </item>
     </group>

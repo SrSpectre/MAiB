@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".usecases.create.sizes.CreateSizesFragment">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/size_value_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="12dp"
+        android:hint="Tamaño"
+        android:textSize="15sp"
+        android:textColorHint="#808080"
+        android:inputType="number"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_size_button"/>
+
+    <ImageButton
+        android:id="@+id/add_size_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:src="@drawable/ic_add"
+        android:background="@android:color/transparent"
+        app:tint="?attr/colorSecondaryVariant"
+        app:layout_constraintTop_toTopOf="@+id/size_value_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/size_value_input" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sizes_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/size_value_input"
+        app:layout_constraintStart_toStartOf="@+id/size_value_input"
+        app:layout_constraintEnd_toEndOf="@+id/add_size_button"
+        tools:itemCount="2"
+        tools:listitem="@layout/sizes_item"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_sizes_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
+        android:text="Agregar valores"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="15sp"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@+id/sizes_list"
+        app:layout_constraintStart_toStartOf="@+id/sizes_list"
+        app:layout_constraintEnd_toEndOf="@+id/sizes_list"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,11 @@ import androidx.navigation.findNavController
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentLoginBinding
 import com.coderipper.maib.databinding.FragmentSignInBinding
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.login.LoginFragmentDirections
+import com.coderipper.maib.utils.setIntValue
+import com.coderipper.maib.utils.setStringValue
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +23,9 @@ import com.coderipper.maib.usecases.login.LoginFragmentDirections
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
+
+    private val imgIds = arrayOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3, R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6)
+    private var avatarId = imgIds[0]
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,9 +40,45 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.run {
+            avatarBtn.setOnClickListener {
+
+            }
+
             loginFab.setOnClickListener {
+                registerUser()
                 root.findNavController().navigate(SignInFragmentDirections.toHome())
             }
+        }
+    }
+
+    private fun registerUser() {
+        binding.run {
+            val name = nameInput.text.toString().trim()
+            val last = nameInput.text.toString().trim()
+            val phone = nameInput.text.toString().trim()
+            val email = nameInput.text.toString().trim()
+            val pswd = nameInput.text.toString().trim()
+            val rpswd = nameInput.text.toString().trim()
+
+            if(name.isNotEmpty() && last.isNotEmpty() && phone.isNotEmpty() &&
+                email.isNotEmpty() && pswd.isNotEmpty() && rpswd.isNotEmpty()) {
+                if(pswd == rpswd) {
+                    val user = User(
+                        name = name,
+                        last = last,
+                        phone = phone,
+                        email = email,
+                        password = pswd,
+                        avatar = avatarId
+                    )
+
+                    setStringValue(requireActivity(), "email", email)
+                    setStringValue(requireActivity(), "name", "$name $last")
+                    setIntValue(requireActivity(), "avatar", avatarId)
+                } else
+                    Snackbar.make(root, "Las contraseñas son diferentes", Snackbar.LENGTH_SHORT).show()
+            } else
+                Snackbar.make(root, "Ingresa todos los datos", Snackbar.LENGTH_SHORT).show()
         }
     }
 

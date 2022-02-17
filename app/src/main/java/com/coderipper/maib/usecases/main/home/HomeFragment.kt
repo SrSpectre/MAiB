@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentHomeBinding
 import com.coderipper.maib.databinding.FragmentMainBinding
@@ -34,6 +35,18 @@ class HomeFragment : Fragment() {
         binding.run {
             categoriesFab.setOnClickListener {
                 activity?.findNavController(R.id.nav_host_fragment)?.navigate(MainFragmentDirections.toCategories())
+            }
+
+            helpFab.setOnClickListener {
+                root.findNavController().navigate(MainNavGraphDirections.toHelp())
+            }
+
+            settingsFab.setOnClickListener {
+                root.findNavController().navigate(MainNavGraphDirections.toSettings())
+            }
+
+            myProductsFab.setOnClickListener {
+                root.findNavController().navigate(MainNavGraphDirections.toDashboard())
             }
         }
     }

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".usecases.create.colors.CreateColorsFragment">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/color_value_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="12dp"
+        android:textSize="16sp"
+        android:textColor="?attr/colorSecondaryVariant"
+        android:textStyle="bold"
+        android:text="Valor"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/color_value_image"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="@+id/color_value_text"
+        app:layout_constraintStart_toEndOf="@+id/color_value_text"
+        app:layout_constraintEnd_toStartOf="@+id/add_color_button"
+        app:layout_constraintBottom_toBottomOf="@+id/color_value_text"/>
+
+    <ImageButton
+        android:id="@+id/add_color_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:src="@drawable/ic_add"
+        android:background="@android:color/transparent"
+        app:tint="?attr/colorSecondaryVariant"
+        app:layout_constraintTop_toTopOf="@+id/color_value_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/color_value_image" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/red_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="?attr/colorSecondaryVariant"
+        android:text="R"
+        app:layout_constraintTop_toTopOf="@+id/red_value_slider"
+        app:layout_constraintStart_toStartOf="@+id/color_value_text"
+        app:layout_constraintBottom_toBottomOf="@+id/red_value_slider"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/red_value_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="12dp"
+        android:valueFrom="0"
+        android:valueTo="255"
+        android:value="255"
+        android:stepSize="1"
+        app:layout_constraintTop_toBottomOf="@+id/color_value_image"
+        app:layout_constraintStart_toEndOf="@+id/red_text"
+        app:layout_constraintEnd_toStartOf="@+id/red_value_input"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/red_value_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="255"
+        android:textSize="15sp"
+        android:textColorHint="#808080"
+        android:inputType="number"
+        android:enabled="false"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@+id/red_value_slider"
+        app:layout_constraintEnd_toEndOf="@+id/add_color_button"
+        app:layout_constraintBottom_toBottomOf="@+id/red_value_slider"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/green_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="?attr/colorSecondaryVariant"
+        android:text="G"
+        app:layout_constraintTop_toTopOf="@+id/green_value_slider"
+        app:layout_constraintStart_toStartOf="@+id/red_text"
+        app:layout_constraintBottom_toBottomOf="@+id/green_value_slider"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/green_value_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="12dp"
+        android:valueFrom="0"
+        android:valueTo="255"
+        android:value="255"
+        android:stepSize="1"
+        app:layout_constraintTop_toBottomOf="@+id/red_value_slider"
+        app:layout_constraintStart_toEndOf="@+id/green_text"
+        app:layout_constraintEnd_toStartOf="@+id/green_value_input"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/green_value_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="255"
+        android:textSize="15sp"
+        android:textColorHint="#808080"
+        android:inputType="number"
+        android:enabled="false"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@+id/green_value_slider"
+        app:layout_constraintEnd_toEndOf="@+id/red_value_input"
+        app:layout_constraintBottom_toBottomOf="@+id/green_value_slider"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/blue_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="?attr/colorSecondaryVariant"
+        android:text="B"
+        app:layout_constraintTop_toTopOf="@+id/blue_value_slider"
+        app:layout_constraintStart_toStartOf="@+id/green_text"
+        app:layout_constraintBottom_toBottomOf="@+id/blue_value_slider"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/blue_value_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="12dp"
+        android:valueFrom="0"
+        android:valueTo="255"
+        android:value="255"
+        android:stepSize="1"
+        app:layout_constraintTop_toBottomOf="@+id/green_value_slider"
+        app:layout_constraintStart_toEndOf="@+id/blue_text"
+        app:layout_constraintEnd_toStartOf="@+id/blue_value_input"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/blue_value_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="255"
+        android:textSize="15sp"
+        android:textColorHint="#808080"
+        android:inputType="number"
+        android:enabled="false"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@+id/blue_value_slider"
+        app:layout_constraintEnd_toEndOf="@+id/green_value_input"
+        app:layout_constraintBottom_toBottomOf="@+id/blue_value_slider"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/colors_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/blue_value_slider"
+        app:layout_constraintStart_toStartOf="@+id/blue_text"
+        app:layout_constraintEnd_toEndOf="@+id/blue_value_input"
+        tools:itemCount="2"
+        tools:listitem="@layout/colors_item"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_sizes_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="12dp"
+        android:text="Agregar valores"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="15sp"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@+id/colors_list"
+        app:layout_constraintStart_toStartOf="@+id/colors_list"
+        app:layout_constraintEnd_toEndOf="@+id/colors_list"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,47 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Tema">
+
+        <ListPreference
+            app:defaultValue="system"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="theme"
+            app:title="Tema activo"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Cartas">
+
+        <SwitchPreferenceCompat
+            app:key="promotional"
+            app:defaultValue="true"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="Mostrar carta promocional" />
+
+        <SwitchPreferenceCompat
+            app:key="recommendations"
+            app:defaultValue="true"
+            app:title="Mostrar recomendaciones" />
+
+        <CheckBoxPreference
+            app:dependency="recommendations"
+            app:key="home_recomm"
+            app:defaultValue="true"
+            app:summaryOff="@string/attachment_home_summary_off"
+            app:summaryOn="@string/attachment_home_summary_on"
+            app:title="Recomendaciones en Home"/>
+
+        <CheckBoxPreference
+            app:dependency="recommendations"
+            app:key="accounts_recomm"
+            app:defaultValue="true"
+            app:summaryOff="@string/attachment_accounts_summary_off"
+            app:summaryOn="@string/attachment_accounts_summary_on"
+            app:title="Recomendaciones de cuentas"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
