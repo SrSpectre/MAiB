@@ -7,13 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.findNavController
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentDashboardBinding
 import com.coderipper.maib.databinding.FragmentHomeBinding
 import com.coderipper.maib.databinding.FragmentMainBinding
 import com.coderipper.maib.databinding.FragmentSearchBinding
+import com.coderipper.maib.models.domain.Product
 import com.coderipper.maib.usecases.main.MainFragmentDirections
+import com.coderipper.maib.usecases.search.adapter.SearchProductsAdapter
+import com.coderipper.maib.utils.DataBase
+import com.coderipper.maib.utils.getLongValue
 import com.google.android.material.snackbar.Snackbar
 
 /**
@@ -24,6 +30,9 @@ import com.google.android.material.snackbar.Snackbar
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var searchProductsAdapter: SearchProductsAdapter
+    private val productsFound = arrayListOf<Product>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +45,8 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userId = getLongValue(requireActivity(), "id")
+        searchProductsAdapter = SearchProductsAdapter(userId, productsFound)
 
         binding.run {
             searchInput.requestFocus()
@@ -44,6 +55,17 @@ class SearchFragment : Fragment() {
 
             backButton.setOnClickListener {
                 root.findNavController().popBackStack()
+            }
+
+            productsList.apply {
+                setHasFixedSize(false)
+                adapter = searchProductsAdapter
+            }
+
+            searchInput.addTextChangedListener {
+                productsFound.clear()
+                productsFound.addAll(DataBase.getProductsBySearch(it.toString().trim()))
+                searchProductsAdapter.notifyDataSetChanged()
             }
         }
     }

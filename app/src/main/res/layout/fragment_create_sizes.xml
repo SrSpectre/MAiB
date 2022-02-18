@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="12dp"
-        android:text="Agregar valores"
+        android:text="Agregar tamaños"
         android:textColor="?attr/colorSecondary"
         android:textSize="15sp"
         android:textAllCaps="false"

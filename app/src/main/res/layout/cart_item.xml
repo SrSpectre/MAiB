@@ -53,7 +53,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/sizes_spinner"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:layout_marginEnd="6dp"
         app:layout_constraintTop_toBottomOf="@+id/title_text"
         app:layout_constraintStart_toStartOf="@+id/title_text"
@@ -62,15 +62,17 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
         <AutoCompleteTextView
+            android:id="@+id/sizes_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/primary_900"
             android:inputType="none"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/colors_spinner"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:layout_marginStart="6dp"
         app:layout_constraintTop_toTopOf="@+id/sizes_spinner"
         app:layout_constraintStart_toEndOf="@+id/sizes_spinner"
@@ -79,8 +81,10 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
         <AutoCompleteTextView
+            android:id="@+id/colors_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/primary_900"
             android:inputType="none"/>
     </com.google.android.material.textfield.TextInputLayout>
 

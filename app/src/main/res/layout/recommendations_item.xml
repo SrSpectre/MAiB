@@ -3,6 +3,8 @@
     android:layout_width="120dp"
     android:layout_height="160dp"
     android:layout_margin="12dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="0dp"
     app:cardElevation="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -41,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="6dp"
-            app:singleSelection="false"
+            app:singleSelection="true"
             app:layout_constraintTop_toBottomOf="@+id/recommendation_image"
             app:layout_constraintStart_toStartOf="@+id/recommendation_image"
             app:layout_constraintEnd_toEndOf="@+id/recommendation_image"

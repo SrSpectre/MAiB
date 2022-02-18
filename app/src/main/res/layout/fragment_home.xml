@@ -61,7 +61,7 @@
         android:layout_marginTop="24dp"
         android:src="@drawable/ic_category"
         app:fabSize="normal"
-        app:layout_constraintStart_toStartOf="@+id/promotion_layout"
+        app:layout_constraintStart_toStartOf="@+id/search_card"
         app:layout_constraintTop_toBottomOf="@+id/recommendations_list"
         app:layout_constraintEnd_toStartOf="@+id/help_fab"/>
 
@@ -93,7 +93,7 @@
         app:fabSize="normal"
         app:layout_constraintStart_toEndOf="@+id/settings_fab"
         app:layout_constraintTop_toTopOf="@+id/settings_fab"
-        app:layout_constraintEnd_toEndOf="@+id/promotion_layout"/>
+        app:layout_constraintEnd_toEndOf="@+id/search_card"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/categories_text"

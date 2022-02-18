@@ -5,14 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentLoginBinding
 import com.coderipper.maib.databinding.FragmentSignInBinding
 import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.login.LoginFragmentDirections
+import com.coderipper.maib.usecases.modals.createAvatarsModal
+import com.coderipper.maib.usecases.signin.adapter.AvatarAdapter
+import com.coderipper.maib.utils.DataBase
 import com.coderipper.maib.utils.setIntValue
+import com.coderipper.maib.utils.setLongValue
 import com.coderipper.maib.utils.setStringValue
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 /**
@@ -24,8 +31,9 @@ class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
 
-    private val imgIds = arrayOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3, R.drawable.avatar4, R.drawable.avatar5, R.drawable.avatar6)
-    private var avatarId = imgIds[0]
+    private var avatarId = R.drawable.avatar1
+
+    private lateinit var avatarsDialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,24 +49,29 @@ class SignInFragment : Fragment() {
 
         binding.run {
             avatarBtn.setOnClickListener {
-
+                avatarsDialog = createAvatarsModal(requireContext(), ::selectedAvatar)
             }
 
             loginFab.setOnClickListener {
                 registerUser()
-                root.findNavController().navigate(SignInFragmentDirections.toHome())
             }
         }
+    }
+
+    private fun selectedAvatar(imgId: Int) {
+        avatarId = imgId
+        binding.avatarSelected.setImageResource(imgId)
+        avatarsDialog.dismiss()
     }
 
     private fun registerUser() {
         binding.run {
             val name = nameInput.text.toString().trim()
-            val last = nameInput.text.toString().trim()
-            val phone = nameInput.text.toString().trim()
-            val email = nameInput.text.toString().trim()
-            val pswd = nameInput.text.toString().trim()
-            val rpswd = nameInput.text.toString().trim()
+            val last = lastInput.text.toString().trim()
+            val phone = phoneInput.text.toString().trim()
+            val email = emailInput.text.toString().trim()
+            val pswd = passwordInput.text.toString().trim()
+            val rpswd = repeatInput.text.toString().trim()
 
             if(name.isNotEmpty() && last.isNotEmpty() && phone.isNotEmpty() &&
                 email.isNotEmpty() && pswd.isNotEmpty() && rpswd.isNotEmpty()) {
@@ -72,13 +85,18 @@ class SignInFragment : Fragment() {
                         avatar = avatarId
                     )
 
+                    DataBase.setUser(user)
+
+                    setLongValue(requireActivity(), "id", user.id)
                     setStringValue(requireActivity(), "email", email)
+                    setStringValue(requireActivity(), "uname", name)
                     setStringValue(requireActivity(), "name", "$name $last")
                     setIntValue(requireActivity(), "avatar", avatarId)
+                    root.findNavController().navigate(SignInFragmentDirections.toHome())
                 } else
                     Snackbar.make(root, "Las contraseñas son diferentes", Snackbar.LENGTH_SHORT).show()
             } else
-                Snackbar.make(root, "Ingresa todos los datos", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(root, "Campos vacios", Snackbar.LENGTH_SHORT).show()
         }
     }
 

@@ -10,7 +10,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/close_button"
@@ -77,12 +77,13 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/description_text"
+            android:id="@+id/price_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Descripción"
-            android:lines="2"
+            android:hint="Precio"
+            android:inputType="number"
+            android:lines="1"
             android:textSize="15sp"
             android:textColorHint="#808080"
             android:background="@android:color/transparent"
@@ -92,7 +93,7 @@
             app:layout_constraintEnd_toEndOf="@+id/name_text"/>
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/details_text"
+            android:id="@+id/description_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -102,9 +103,9 @@
             android:textColorHint="#808080"
             android:background="@android:color/transparent"
             android:gravity="start|top"
-            app:layout_constraintTop_toBottomOf="@+id/description_text"
-            app:layout_constraintStart_toStartOf="@+id/description_text"
-            app:layout_constraintEnd_toEndOf="@+id/description_text"/>
+            app:layout_constraintTop_toBottomOf="@+id/price_text"
+            app:layout_constraintStart_toStartOf="@+id/price_text"
+            app:layout_constraintEnd_toEndOf="@+id/price_text"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/sizes_text"
@@ -115,9 +116,9 @@
             android:textColor="?attr/colorSecondaryVariant"
             android:textStyle="bold"
             android:text="Tamaños"
-            app:layout_constraintTop_toBottomOf="@+id/details_text"
-            app:layout_constraintStart_toStartOf="@+id/details_text"
-            app:layout_constraintEnd_toEndOf="@+id/details_text"/>
+            app:layout_constraintTop_toBottomOf="@+id/description_text"
+            app:layout_constraintStart_toStartOf="@+id/description_text"
+            app:layout_constraintEnd_toEndOf="@+id/description_text"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sizes_list"
@@ -186,11 +187,13 @@
             app:layout_constraintEnd_toEndOf="@+id/colors_list" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/create_product_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             app:icon="@drawable/ic_next"
             android:text="Finalizar"
+            app:layout_constraintTop_toBottomOf="@+id/add_color_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.coderipper.maib.databinding.FragmentCreateSizesBinding
 import com.coderipper.maib.usecases.create.sizes.adapter.SizesAdapter
+import com.coderipper.maib.utils.DataBase
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 
@@ -52,8 +53,12 @@ class CreateSizesFragment : BottomSheetDialogFragment() {
                     sizeValueInput.text?.clear()
                 }
                 else
-                    //Snackbar.make(root, "Ingresa un valor", Snackbar.LENGTH_SHORT).show()
                     Toast.makeText(requireContext(), "Ingresa un valor", Toast.LENGTH_SHORT).show()
+            }
+
+            addSizesButton.setOnClickListener {
+                DataBase.sizes.value = sizes
+                dismiss()
             }
         }
     }

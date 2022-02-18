@@ -68,7 +68,7 @@
                 android:textSize="15sp"
                 android:textColor="?attr/colorPrimaryVariant"
                 android:textStyle="bold"
-                android:text="Ropa de diseñador"
+                android:text="Closet"
                 app:layout_constraintTop_toBottomOf="@+id/search_card"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -173,13 +173,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/categories_button"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_margin="12dp"
                     android:src="@drawable/ic_filter"
                     android:background="@drawable/mini_image_button"
+                    app:iconTint="?attr/colorSecondary"
                     android:elevation="8dp"
                     android:clickable="true"
                     android:focusable="true"
@@ -187,18 +188,19 @@
                     app:layout_constraintEnd_toEndOf="parent"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/my_products_list"
+                    android:id="@+id/products_list"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="12dp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="horizontal"
+                    app:spanCount="2"
+                    app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/categories_button"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:itemCount="3"
-                    tools:listitem="@layout/my_products_item"/>
+                    tools:listitem="@layout/product_item"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

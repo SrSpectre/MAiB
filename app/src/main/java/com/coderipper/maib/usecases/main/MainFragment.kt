@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.widget.ImageViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -12,8 +13,8 @@ import androidx.navigation.findNavController
 import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentMainBinding
-import com.coderipper.maib.utils.getIntValue
-import com.coderipper.maib.utils.getStringValue
+import com.coderipper.maib.usecases.modals.createAvatarsModal
+import com.coderipper.maib.utils.*
 import com.google.android.material.textview.MaterialTextView
 
 
@@ -26,6 +27,10 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var uname: String
+    private lateinit var headerImage: AppCompatImageView
+    private lateinit var avatarsDialog: AlertDialog
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,13 +42,24 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userId = getLongValue(requireActivity(), "id")
+        uname = getStringValue(requireActivity(), "uname") ?: ""
+        val imgId = getIntValue(requireActivity(), "avatar")
 
         binding.run {
             val header = menuNavigation.getHeaderView(0)
-            header.findViewById<AppCompatImageView>(R.id.avatar_selected).setBackgroundResource(
-                getIntValue(requireActivity(), "avatar")
-            )
+
+            avatarSelected.setImageResource(imgId)
+            sectionText.text = "¡Hola de nuevo $uname!"
+            headerImage = header.findViewById(R.id.avatar_selected)
+            headerImage.setImageResource(imgId)
             header.findViewById<MaterialTextView>(R.id.user_name_text).text = getStringValue(requireActivity(), "name")
+            header.findViewById<MaterialTextView>(R.id.following_text).text = DataBase.getFollowersCount(userId).toString()
+            header.findViewById<MaterialTextView>(R.id.rate_text).text = DataBase.getUserById(userId)?.rate.toString()
+
+            avatarBtn.setOnClickListener {
+                avatarsDialog = createAvatarsModal(requireContext(), ::selectedAvatar)
+            }
 
             homeToolbar.setNavigationOnClickListener {
                 drawerLayout.open()
@@ -65,7 +81,7 @@ class MainFragment : Fragment() {
 
                 when (menuItem.itemId) {
                     R.id.home -> {
-                        sectionText.text = "¡Bienvenida de nuevo Anny!"
+                        sectionText.text = "¡Hola de nuevo $uname!"
                         navMainFragment.findNavController().navigate(MainNavGraphDirections.toHome())
                     }
                     R.id.dashboard -> {
@@ -89,6 +105,7 @@ class MainFragment : Fragment() {
                         navMainFragment.findNavController().navigate(MainNavGraphDirections.toAbout())
                     }
                     R.id.logout -> {
+                        logout(requireActivity())
                         root.findNavController().navigate(MainFragmentDirections.toLogin())
                     }
                 }
@@ -96,6 +113,13 @@ class MainFragment : Fragment() {
                 true
             }
         }
+    }
+
+    private fun selectedAvatar(imgId: Int) {
+        binding.avatarSelected.setImageResource(imgId)
+        headerImage.setImageResource(imgId)
+        setIntValue(requireActivity(), "avatar", imgId)
+        avatarsDialog.dismiss()
     }
 
     override fun onDestroyView() {

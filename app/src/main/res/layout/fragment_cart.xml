@@ -14,6 +14,7 @@
         android:backgroundTint="@color/secondary_100"
         app:cardCornerRadius="0dp"
         app:cardElevation="8dp"
+        app:behavior_draggable="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_peekHeight="65dp"
         style="?attr/bottomSheetStyle">
@@ -143,7 +144,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary_900"
-                    android:text="$425.00"
+                    android:text="$0.00"
                     app:layout_constraintTop_toTopOf="@+id/products_text"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -155,7 +156,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary_900"
-                    android:text="$50.00"
+                    android:text="$0.00"
                     app:layout_constraintTop_toBottomOf="@+id/products_price_text"
                     app:layout_constraintEnd_toEndOf="@+id/products_price_text"/>
 
@@ -167,7 +168,7 @@
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary_900"
-                    android:text="$21.25"
+                    android:text="$0.00"
                     app:layout_constraintTop_toBottomOf="@+id/send_price_text"
                     app:layout_constraintEnd_toEndOf="@+id/send_price_text"/>
 
@@ -179,7 +180,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary_900"
-                    android:text="$496.25"
+                    android:text="$0.00"
                     app:layout_constraintTop_toBottomOf="@+id/iva_price_text"
                     app:layout_constraintEnd_toEndOf="@+id/iva_price_text"/>
 

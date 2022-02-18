@@ -13,7 +13,7 @@
         android:layout_margin="24dp"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:text="Help"
+        android:text="@string/static_help"
         android:textColor="?attr/colorSecondaryVariant"/>
 
 </ScrollView>

@@ -1,18 +1,24 @@
 package com.coderipper.maib.usecases.main.dashboard
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentDashboardBinding
 import com.coderipper.maib.databinding.FragmentHomeBinding
 import com.coderipper.maib.databinding.FragmentMainBinding
+import com.coderipper.maib.models.domain.Product
 import com.coderipper.maib.usecases.main.MainFragmentDirections
 import com.coderipper.maib.usecases.main.dashboard.adapter.SectionsPagerAdapter
+import com.coderipper.maib.utils.DataBase
+import com.coderipper.maib.utils.getLongValue
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -36,13 +42,31 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val userId = getLongValue(requireActivity(), "id")
+        val products = DataBase.getProductsByUserId(userId) as MutableList<Any>
+        val following = DataBase.getFollowing(userId) as MutableList<Any>
+        val navController = activity?.findNavController(R.id.nav_host_fragment)
         binding.run {
+            if(navController == null)
+                root.findNavController().popBackStack()
+
+            followingText.text = DataBase.getFollowersCount(userId).toString()
+            val rate = DataBase.getUserById(userId)?.rate.toString()
+            rateText.text = rate.ifEmpty { "1.0" }
+
             createProductFab.setOnClickListener {
-                activity?.findNavController(R.id.nav_host_fragment)?.navigate(MainFragmentDirections.toCreate())
+                val items = arrayOf("Closet", "Arte Digital", "Pinturas", "Interiores", "Esculturas", "Libros", "Sin categoria")
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Categoria")
+                    .setItems(items) { dialog, which ->
+                        navController?.navigate(MainFragmentDirections.toCreate(which))
+                    }
+                    .show()
             }
 
+
             sectionsPager.apply {
-                adapter = SectionsPagerAdapter(arrayListOf("Mis productos", "Siguiendo"))
+                adapter = SectionsPagerAdapter(arrayListOf(products, following), navController!!)
                 clipToPadding = false
                 clipChildren = false
                 offscreenPageLimit = 2

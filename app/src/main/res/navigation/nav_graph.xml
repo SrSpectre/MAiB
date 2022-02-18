@@ -46,8 +46,16 @@
             app:destination="@id/categories_fragment"/>
 
         <action
+            android:id="@+id/to_search"
+            app:destination="@id/search_fragment"/>
+
+        <action
             android:id="@+id/to_create"
             app:destination="@id/create_product"/>
+
+        <action
+            android:id="@+id/to_profile"
+            app:destination="@id/user_profile"/>
     </fragment>
 
     <fragment
@@ -59,6 +67,10 @@
         <action
             android:id="@+id/to_search"
             app:destination="@id/search_fragment"/>
+
+        <action
+            android:id="@+id/to_profile"
+            app:destination="@id/user_profile"/>
     </fragment>
 
     <fragment
@@ -73,6 +85,27 @@
         android:name="com.coderipper.maib.usecases.create.CreateProductFragment"
         android:label="Create product"
         tools:layout="@layout/fragment_create_product">
+
+        <argument
+            android:name="category"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/user_profile"
+        android:name="com.coderipper.maib.usecases.profile.ProfileFragment"
+        android:label="Create product"
+        tools:layout="@layout/fragment_profile">
+
+        <argument
+            android:name="userId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+
+        <action
+            android:id="@+id/to_profile"
+            app:destination="@id/user_profile"/>
     </fragment>
 
 </navigation>

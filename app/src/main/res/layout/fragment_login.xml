@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/email_input"
+        app:layout_constraintBottom_toTopOf="@+id/email_input_layout"
         style="@style/Widget.Maib.LoginLayer">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -38,7 +38,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/email_input"
+        android:id="@+id/email_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -48,30 +48,34 @@
         app:layout_constraintTop_toBottomOf="@+id/background_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/password_input"
+        app:layout_constraintBottom_toTopOf="@+id/password_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/email_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress"
+            android:lines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_input"
+        android:id="@+id/password_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
-        app:layout_constraintTop_toBottomOf="@+id/email_input"
-        app:layout_constraintStart_toStartOf="@+id/email_input"
-        app:layout_constraintEnd_toEndOf="@+id/email_input"
+        app:layout_constraintTop_toBottomOf="@+id/email_input_layout"
+        app:layout_constraintStart_toStartOf="@+id/email_input_layout"
+        app:layout_constraintEnd_toEndOf="@+id/email_input_layout"
         app:layout_constraintBottom_toTopOf="@+id/sign_in_text"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:lines="1"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textview.MaterialTextView
@@ -82,9 +86,9 @@
         android:textSize="15sp"
         android:textStyle="bold"
         android:text="¡Unete a nosotros!"
-        app:layout_constraintTop_toBottomOf="@+id/password_input"
-        app:layout_constraintStart_toStartOf="@+id/password_input"
-        app:layout_constraintEnd_toEndOf="@+id/password_input"
+        app:layout_constraintTop_toBottomOf="@+id/password_input_layout"
+        app:layout_constraintStart_toStartOf="@+id/password_input_layout"
+        app:layout_constraintEnd_toEndOf="@+id/password_input_layout"
         app:layout_constraintBottom_toTopOf="@+id/login_fab"/>
 
     <com.google.android.material.textview.MaterialTextView
@@ -96,7 +100,7 @@
         android:textStyle="bold"
         android:text="Ingresar"
         app:layout_constraintTop_toTopOf="@+id/login_fab"
-        app:layout_constraintStart_toStartOf="@+id/password_input"
+        app:layout_constraintStart_toStartOf="@+id/password_input_layout"
         app:layout_constraintEnd_toStartOf="@+id/login_fab"
         app:layout_constraintBottom_toBottomOf="@+id/login_fab"/>
 
@@ -107,9 +111,9 @@
         android:layout_marginVertical="24dp"
         app:fabSize="normal"
         android:src="@drawable/ic_next"
-        app:layout_constraintTop_toBottomOf="@+id/password_input"
+        app:layout_constraintTop_toBottomOf="@+id/password_input_layout"
         app:layout_constraintStart_toEndOf="@+id/login_text"
-        app:layout_constraintEnd_toEndOf="@+id/password_input"
+        app:layout_constraintEnd_toEndOf="@+id/password_input_layout"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
