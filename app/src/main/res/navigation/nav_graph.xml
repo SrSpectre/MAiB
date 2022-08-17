@@ -56,6 +56,10 @@
         <action
             android:id="@+id/to_profile"
             app:destination="@id/user_profile"/>
+
+        <action
+            android:id="@+id/to_video"
+            app:destination="@id/video_fragment"/>
     </fragment>
 
     <fragment
@@ -106,6 +110,31 @@
         <action
             android:id="@+id/to_profile"
             app:destination="@id/user_profile"/>
+
+        <action
+            android:id="@+id/to_video"
+            app:destination="@id/video_fragment"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/video_fragment"
+        android:name="com.coderipper.maib.usecases.main.stories.VideoFragment"
+        android:label="Video"
+        tools:layout="@layout/fragment_video">
+
+        <argument
+            android:name="uri"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="controls"
+            app:argType="boolean"
+            android:defaultValue="true" />
+
+        <argument
+            android:name="fromUser"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 </navigation>

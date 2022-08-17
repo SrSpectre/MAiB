@@ -374,6 +374,10 @@ object DataBase {
         return following.filter { it.userId == userId }.size
     }
 
+    fun getStoryFromUser(userId: Long): String? {
+        return users.find { it.id == userId }?.story
+    }
+
     fun getCartByUserId(userId: Long): MutableList<Product> {
         val cartList = arrayListOf<Product>()
         carts.filter { it.userId == userId }.forEach { cart ->
@@ -475,6 +479,10 @@ object DataBase {
 
     fun updatePassword(userId: Long, password: String) {
         users.find { it.id == userId }?.password = password
+    }
+
+    fun updateStory(userId: Long, story: String) {
+        users.find { it.id == userId }?.story = story
     }
 
     fun updateStock(id: Long, stock: Boolean) {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentHomeBinding
@@ -83,6 +84,12 @@ class ProfileFragment : Fragment() {
                         }
                         else -> false
                     }
+                }
+
+                avatarSelected.setOnClickListener {
+                    val videoUri = DataBase.getStoryFromUser(userId)
+                    if(!videoUri.isNullOrEmpty())
+                        findNavController().navigate(MainFragmentDirections.toVideo(videoUri, false))
                 }
             } else
                 root.findNavController().popBackStack()

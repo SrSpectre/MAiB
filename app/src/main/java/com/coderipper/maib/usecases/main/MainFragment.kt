@@ -1,5 +1,7 @@
 package com.coderipper.maib.usecases.main
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.navigation.findNavController
 import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentMainBinding
+import com.coderipper.maib.usecases.main.stories.StoryOptions
 import com.coderipper.maib.usecases.modals.createAvatarsModal
 import com.coderipper.maib.utils.*
 import com.google.android.material.textview.MaterialTextView
@@ -59,6 +62,11 @@ class MainFragment : Fragment() {
 
             avatarBtn.setOnClickListener {
                 avatarsDialog = createAvatarsModal(requireContext(), ::selectedAvatar)
+            }
+
+            avatarBtn.setOnLongClickListener {
+                storyOptions()
+                true
             }
 
             homeToolbar.setNavigationOnClickListener {
@@ -120,6 +128,11 @@ class MainFragment : Fragment() {
         headerImage.setImageResource(imgId)
         setIntValue(requireActivity(), "avatar", imgId)
         avatarsDialog.dismiss()
+    }
+
+    private fun storyOptions() {
+        val storyOptions = StoryOptions.newInstance()
+        storyOptions.show(parentFragmentManager, "Options")
     }
 
     override fun onDestroyView() {

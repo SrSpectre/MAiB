@@ -1,9 +1,11 @@
 package com.coderipper.maib
 
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.navigation.findNavController
 import androidx.preference.PreferenceManager
 import com.coderipper.maib.utils.getStringValue
 import com.coderipper.maib.utils.setStringValue
@@ -32,7 +34,6 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
     override fun onDestroy() {
         super.onDestroy()
-
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 }
