@@ -38,7 +38,12 @@ class VideoFragment : Fragment() {
         binding.run {
             videoContainer.run {
                 mediaCollection.setAnchorView(this)
-                if (controls) setMediaController(mediaCollection)
+                if (controls)
+                    setMediaController(mediaCollection)
+                else
+                    setOnCompletionListener {
+                        findNavController().popBackStack()
+                    }
                 setVideoURI(uri)
                 start()
             }
