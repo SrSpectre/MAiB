@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.coderipper.maib.databinding.FragmentCreateColorsBinding
 import com.coderipper.maib.usecases.create.colors.adapter.ColorsAdapter
-import com.coderipper.maib.usecases.create.sizes.adapter.SizesAdapter
 import com.coderipper.maib.utils.DataBase
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

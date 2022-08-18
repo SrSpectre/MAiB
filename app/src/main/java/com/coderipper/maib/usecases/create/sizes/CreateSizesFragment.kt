@@ -10,7 +10,6 @@ import com.coderipper.maib.databinding.FragmentCreateSizesBinding
 import com.coderipper.maib.usecases.create.sizes.adapter.SizesAdapter
 import com.coderipper.maib.utils.DataBase
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 
 /**
  * A simple [Fragment] subclass.

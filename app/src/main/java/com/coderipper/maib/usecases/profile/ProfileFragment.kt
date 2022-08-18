@@ -10,16 +10,18 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.coderipper.maib.R
-import com.coderipper.maib.databinding.FragmentHomeBinding
-import com.coderipper.maib.databinding.FragmentMainBinding
 import com.coderipper.maib.databinding.FragmentProfileBinding
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.main.MainFragmentDirections
 import com.coderipper.maib.usecases.profile.adapter.MoreArtistsAdapter
 import com.coderipper.maib.usecases.profile.adapter.ProductsAdapter
-import com.coderipper.maib.utils.DataBase
 import com.coderipper.maib.utils.getBooleanValue
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.utils.getStringValue
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
+import com.google.firebase.storage.FirebaseStorage
 
 /**
  * A simple [Fragment] subclass.
@@ -29,6 +31,9 @@ import com.google.android.material.snackbar.Snackbar
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     private val args: ProfileFragmentArgs by navArgs()
 
@@ -43,56 +48,78 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val activeId = getLongValue(requireActivity(), "id")
+        val activeId = getStringValue(requireActivity(), "id")!!
         val userId = args.userId
-        val user = DataBase.getUserById(userId)
         val visible = getBooleanValue(requireContext(), "accounts_recomm")
 
         binding.run {
-            if(user != null) {
-                avatarSelected.setImageResource(user.avatar)
-                nameText.text = user.name
-                descriptionText.text = user.description
-                contactText.text = "${user.phone}\n${user.email}"
-                followingText.text = DataBase.getFollowersCount(userId).toString()
-                rateText.text = user.rate.toString()
+            db.collection("users").document(userId).get().addOnSuccessListener { doc ->
+                val user = doc.toObject<User>()
 
-                productsList.apply {
-                    setHasFixedSize(false)
-                    adapter = ProductsAdapter(activeId, DataBase.getProductsByUserId(userId), root.findNavController())
-                }
+                if(user != null) {
+                    avatarSelected.setImageResource(user.avatar)
+                    nameText.text = user.name
+                    descriptionText.text = user.description
+                    contactText.text = "${user.phone}\n${user.email}"
+                    followingText.text = user.followers.size.toString()
+                    rateText.text = user.rate.toString()
 
-                moreArtistText.isVisible = visible
-
-                moreArtistList.apply {
-                    setHasFixedSize(false)
-                    adapter = MoreArtistsAdapter(DataBase.getMoreArtists(activeId, userId), root.findNavController())
-                    isVisible = visible
-                }
-
-                profileToolbar.setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.follow -> {
-                            if(DataBase.getIsFollowing(userId, activeId)) {
-                                DataBase.removeFollowing(userId, activeId)
-                                Snackbar.make(root, "Ya no sigues a ${user.name}", Snackbar.LENGTH_SHORT).show()
-                            } else {
-                                DataBase.setFollowing(userId, activeId)
-                                Snackbar.make(root, "Ahora sigues a ${user.name}", Snackbar.LENGTH_SHORT).show()
-                            }
-                            true
-                        }
-                        else -> false
+                    productsList.apply {
+                        setHasFixedSize(false)
+                        adapter = ProductsAdapter(activeId, user.products, root.findNavController())
                     }
-                }
 
-                avatarSelected.setOnClickListener {
-                    val videoUri = DataBase.getStoryFromUser(userId)
-                    if(!videoUri.isNullOrEmpty())
-                        findNavController().navigate(MainFragmentDirections.toVideo(videoUri, false))
-                }
-            } else
-                root.findNavController().popBackStack()
+                    moreArtistText.isVisible = visible
+
+                    db.collection("users").get().addOnSuccessListener { data ->
+                        if (!data.isEmpty) {
+                            val users = data.toObjects<User>()
+                            val currentUser = data.first { it.id == activeId }.toObject<User>()
+                            val filtered = users.filter { it.email != user.email && it.email != currentUser.email }
+
+                            moreArtistList.apply {
+                                setHasFixedSize(false)
+                                adapter = MoreArtistsAdapter(filtered, root.findNavController())
+                                isVisible = visible
+                            }
+                        }
+                    }
+
+                    profileToolbar.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.follow -> {
+                                db.collection("users").document(activeId).get().addOnSuccessListener {
+                                    val activeUser = doc.toObject<User>()
+                                    if (activeUser != null) {
+                                        if (activeUser.following.contains(userId)) {
+                                            activeUser.following.remove(userId)
+                                            db.collection("users").document(activeId).update("following", activeUser.following)
+                                            Snackbar.make(root, "Ya no sigues a ${user.name}", Snackbar.LENGTH_SHORT).show()
+                                        } else {
+                                            activeUser.following.add(userId)
+                                            db.collection("users").document(activeId).update("following", activeUser.following)
+                                            Snackbar.make(root, "Ahora sigues a ${user.name}", Snackbar.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+
+                    avatarSelected.setOnClickListener {
+                        db.collection("users").document(userId).get().addOnSuccessListener { data ->
+                            val user = data.toObject<User>()
+                            if (user != null) {
+                                if(user.story != null)
+                                    findNavController().navigate(MainFragmentDirections.toVideo(user.story!!.uri, false))
+                            }
+                        }
+                    }
+                } else
+                    root.findNavController().popBackStack()
+            }
 
             profileToolbar.setNavigationOnClickListener {
                 root.findNavController().popBackStack()
@@ -106,13 +133,6 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() = ProfileFragment()
     }

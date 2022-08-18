@@ -1,19 +1,17 @@
 package com.coderipper.maib.usecases.main.account
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.coderipper.maib.R
-import com.coderipper.maib.databinding.FragmentAboutBinding
+import androidx.fragment.app.Fragment
 import com.coderipper.maib.databinding.FragmentAccountBinding
-import com.coderipper.maib.databinding.FragmentHelpBinding
-import com.coderipper.maib.databinding.FragmentMainBinding
-import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.models.session.User
+import com.coderipper.maib.utils.getStringValue
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 /**
  * A simple [Fragment] subclass.
@@ -23,6 +21,8 @@ import com.google.android.material.snackbar.Snackbar
 class AccountFragment : Fragment() {
     private var _binding: FragmentAccountBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +35,7 @@ class AccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
+        val userId = getStringValue(requireActivity(), "id")!!
 
         loadTextFields(userId)
         binding.updateFab.setOnClickListener {
@@ -43,23 +43,30 @@ class AccountFragment : Fragment() {
         }
     }
 
-    private fun loadTextFields(userId: Long) {
-        val user = DataBase.getUserById(userId)
-
+    private fun loadTextFields(userId: String) {
         binding.run {
-            aboutInput.apply {
-                text?.clear()
-                hint = user?.description
+            db.collection("users").document(userId).get().addOnSuccessListener { data ->
+                if (data.exists()) {
+                    val user = data.toObject<User>()
+                    if (user != null) {
+                        aboutInput.apply {
+                            text?.clear()
+                            hint = user.description
+                        }
+                        phoneInput.text?.clear()
+                        emailInput.text?.clear()
+                        passwordInput.text?.clear()
+                        phoneInputLayout.hint = user.phone
+                        emailInputLayout.hint = user.email
+                    }
+                    else
+                        Snackbar.make(root, "Error con cuenta", Snackbar.LENGTH_SHORT).show()
+                }
             }
-            phoneInput.text?.clear()
-            emailInput.text?.clear()
-            passwordInput.text?.clear()
-            phoneInputLayout.hint = user?.phone
-            emailInputLayout.hint = user?.email
         }
     }
 
-    private fun updateData(userId: Long) {
+    private fun updateData(userId: String) {
         binding.run {
             val description = aboutInput.text.toString().trim()
             val phone = phoneInput.text.toString().trim()
@@ -70,18 +77,18 @@ class AccountFragment : Fragment() {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Alerta")
                     .setMessage("¿Estas seguro de actualizar la información?")
-                    .setNegativeButton("Cancelar") { dialog, which ->
+                    .setNegativeButton("Cancelar") { dialog, _ ->
                         dialog.dismiss()
                     }
-                    .setPositiveButton("Si, continuar") { dialog, which ->
+                    .setPositiveButton("Si, continuar") { dialog, _ ->
                         if(description.isNotEmpty())
-                            DataBase.updateDescription(userId, description)
+                            db.collection("users").document(userId).update("description", description)
                         if(phone.isNotEmpty())
-                            DataBase.updatePhone(userId, phone)
+                            db.collection("users").document(userId).update("phone", phone)
                         if(email.isNotEmpty())
-                            DataBase.updateEmail(userId, email)
+                            db.collection("users").document(userId).update("email", email)
                         if(password.isNotEmpty())
-                            DataBase.updatePassword(userId, password)
+                            db.collection("users").document(userId).update("password", password)
                         loadTextFields(userId)
                         dialog.dismiss()
                         Snackbar.make(root, "Información actualizada", Snackbar.LENGTH_SHORT).setAnchorView(updateFab).show()

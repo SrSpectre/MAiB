@@ -1,26 +1,21 @@
 package com.coderipper.maib.usecases.signin
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
-import com.coderipper.maib.databinding.FragmentLoginBinding
 import com.coderipper.maib.databinding.FragmentSignInBinding
 import com.coderipper.maib.models.session.User
-import com.coderipper.maib.usecases.login.LoginFragmentDirections
 import com.coderipper.maib.usecases.modals.createAvatarsModal
-import com.coderipper.maib.usecases.signin.adapter.AvatarAdapter
-import com.coderipper.maib.utils.DataBase
 import com.coderipper.maib.utils.setIntValue
-import com.coderipper.maib.utils.setLongValue
 import com.coderipper.maib.utils.setStringValue
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * A simple [Fragment] subclass.
@@ -30,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 class SignInFragment : Fragment() {
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding!!
+    private val db = FirebaseFirestore.getInstance()
 
     private var avatarId = R.drawable.avatar1
 
@@ -76,23 +72,34 @@ class SignInFragment : Fragment() {
             if(name.isNotEmpty() && last.isNotEmpty() && phone.isNotEmpty() &&
                 email.isNotEmpty() && pswd.isNotEmpty() && rpswd.isNotEmpty()) {
                 if(pswd == rpswd) {
-                    val user = User(
-                        name = name,
-                        last = last,
-                        phone = phone,
-                        email = email,
-                        password = pswd,
-                        avatar = avatarId
-                    )
+                    val auth = FirebaseAuth.getInstance()
 
-                    DataBase.setUser(user)
+                    auth.createUserWithEmailAndPassword(email, pswd).addOnSuccessListener {
+                        val uid = it.user!!.uid
+                        val user = User(
+                            name = name,
+                            last = last,
+                            phone = phone,
+                            email = email,
+                            password = pswd,
+                            avatar = avatarId
+                        )
 
-                    setLongValue(requireActivity(), "id", user.id)
-                    setStringValue(requireActivity(), "email", email)
-                    setStringValue(requireActivity(), "uname", name)
-                    setStringValue(requireActivity(), "name", "$name $last")
-                    setIntValue(requireActivity(), "avatar", avatarId)
-                    root.findNavController().navigate(SignInFragmentDirections.toHome())
+                        db.collection("users").document(uid).set(user).addOnSuccessListener {
+                            setStringValue(requireActivity(), "id", uid)
+                            setStringValue(requireActivity(), "email", email)
+                            setStringValue(requireActivity(), "uname", name)
+                            setStringValue(requireActivity(), "name", "$name $last")
+                            setIntValue(requireActivity(), "avatar", avatarId)
+                            root.findNavController().popBackStack()
+                        }.addOnFailureListener {
+                            Snackbar.make(root, "Error al registrar usuario", Snackbar.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener {
+                        Snackbar.make(root, "Error al registrar usuario", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                    //DataBase.setUser(user)
                 } else
                     Snackbar.make(root, "Las contraseñas son diferentes", Snackbar.LENGTH_SHORT).show()
             } else

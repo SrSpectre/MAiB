@@ -1,14 +1,20 @@
 package com.coderipper.maib.usecases.login
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.coderipper.maib.databinding.FragmentLoginBinding
-import com.coderipper.maib.utils.*
+import com.coderipper.maib.models.session.User
+import com.coderipper.maib.utils.getStringValue
+import com.coderipper.maib.utils.setIntValue
+import com.coderipper.maib.utils.setStringValue
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 /**
  * A simple [Fragment] subclass.
@@ -18,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,19 +58,32 @@ class LoginFragment : Fragment() {
             val pswd = passwordInput.text.toString().trim()
 
             if(email.isNotEmpty() && pswd.isNotEmpty()) {
-                val user = DataBase.loginUser(email, pswd)
-                if(user != null) {
-                    setLongValue(requireActivity(), "id", user.id)
-                    setStringValue(requireActivity(), "email", user.email)
-                    setStringValue(requireActivity(), "uname", user.name)
-                    setStringValue(requireActivity(), "name", "${user.name} ${user.last}")
-                    setIntValue(requireActivity(), "avatar", user.avatar)
-                    root.findNavController().navigate(LoginFragmentDirections.toHome())
-                }else
-                    Snackbar.make(root, "Usuario no registrado", Snackbar.LENGTH_SHORT)
-                        .setAction("¡Unete!") {
-                            root.findNavController().navigate(LoginFragmentDirections.toSignIn())
-                        }.show()
+                //val user = DataBase.loginUser(email, pswd)
+                val auth = FirebaseAuth.getInstance()
+                auth.signInWithEmailAndPassword(email, pswd).addOnSuccessListener { authIt ->
+                    val uid = authIt.user!!.uid
+
+                    db.collection("users").document(uid).get().addOnSuccessListener { data ->
+                        if(data.exists()) {
+                            val user = data.toObject<User>()
+                            if (user != null) {
+                                setStringValue(requireActivity(), "id", uid)
+                                setStringValue(requireActivity(), "email", user.email)
+                                setStringValue(requireActivity(), "uname", user.name)
+                                setStringValue(requireActivity(), "name", "${user.name} ${user.last}")
+                                setIntValue(requireActivity(), "avatar", user.avatar)
+                                root.findNavController().navigate(LoginFragmentDirections.toHome())
+                            } else
+                                Snackbar.make(root, "Error con cuenta", Snackbar.LENGTH_SHORT).show()
+                        } else
+                            Snackbar.make(root, "Usuario no registrado", Snackbar.LENGTH_SHORT)
+                                .setAction("¡Unete!") {
+                                    root.findNavController().navigate(LoginFragmentDirections.toSignIn())
+                                }.show()
+                    }
+                }.addOnFailureListener {
+                    Snackbar.make(root, "Información erronea", Snackbar.LENGTH_SHORT).show()
+                }
             } else
                 Snackbar.make(root, "Campos vacios", Snackbar.LENGTH_SHORT).show()
         }

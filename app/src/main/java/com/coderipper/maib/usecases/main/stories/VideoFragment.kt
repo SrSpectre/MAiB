@@ -1,21 +1,37 @@
 package com.coderipper.maib.usecases.main.stories
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.ProgressDialog
+import android.content.Context.NOTIFICATION_SERVICE
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.MediaController
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentVideoBinding
-import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.models.domain.Story
+import com.coderipper.maib.models.session.User
+import com.coderipper.maib.utils.getStringValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.storage.FirebaseStorage
 
 class VideoFragment : Fragment() {
     private var _binding: FragmentVideoBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     private val args: VideoFragmentArgs by navArgs()
 
@@ -53,14 +69,55 @@ class VideoFragment : Fragment() {
                 editFab.text = "Eliminar"
             }
             editFab.setOnClickListener {
-                if (!fromUser) {
-                    val userId = getLongValue(requireActivity(), "id")
-                    DataBase.updateStory(userId, uri.toString())
-                } else {
-                    val userId = getLongValue(requireActivity(), "id")
-                    DataBase.updateStory(userId, "")
+                val userId = getStringValue(requireActivity(), "id")!!
+                val doc = db.collection("users").document(userId)
+                doc.get().addOnSuccessListener { data ->
+                    val user = data.toObject<User>()
+                    if (user != null) {
+                        if (!fromUser) {
+                            val progressDialog = ProgressDialog(requireContext())
+                            progressDialog.setMessage("Subiendo video...")
+                            progressDialog.setCancelable(false)
+                            progressDialog.show()
+                            val location = "videos/${System.nanoTime()}"
+                            val ref = storage.getReference(location)
+                            ref.putFile(uri).addOnSuccessListener { task ->
+                                task.storage.downloadUrl.addOnSuccessListener { uploadedUri ->
+                                    doc.update("story", Story(location, uploadedUri.toString()))
+                                }
+                                if (progressDialog.isShowing)
+                                    progressDialog.dismiss()
+                                val channel = NotificationChannel("channel1", "Notf channel", NotificationManager.IMPORTANCE_DEFAULT)
+                                channel.description = "description"
+                                val notificationManager = requireActivity().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                                notificationManager.createNotificationChannel(channel)
+
+                                val builder = NotificationCompat.Builder(requireContext(), "channel1")
+                                    .setSmallIcon(R.drawable.notification_icon)
+                                    .setContentTitle("Wooow!")
+                                    .setContentText("Seguro amaran tu historia!")
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+                                with(NotificationManagerCompat.from(requireContext())) {
+                                    notify(1, builder.build())
+                                }
+                                findNavController().popBackStack()
+                            }.addOnFailureListener {
+                                println(it.message)
+                                if (progressDialog.isShowing)
+                                    progressDialog.dismiss()
+                            }
+                        } else {
+                            val story = user.story
+                            if(story != null) {
+                                val storageRef = storage.reference
+                                storageRef.child(story.id).delete()
+                                db.collection("users").document(userId).update("story", null)
+                            }
+                            findNavController().popBackStack()
+                        }
+                    }
                 }
-                findNavController().popBackStack()
             }
         }
     }
@@ -71,12 +128,6 @@ class VideoFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @return A new instance of fragment VideoFragment.
-         */
         @JvmStatic
         fun newInstance() = VideoFragment()
     }

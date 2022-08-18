@@ -1,20 +1,23 @@
 package com.coderipper.maib.usecases.categories.adapter
 
-import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.*
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.models.session.User
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.squareup.picasso.Picasso
 
-class BuyProductsAdapter(private val userId: Long, private val products: MutableList<Product>, private val navController: NavController, val openProfile: (userId: Long) -> Unit):
+class BuyProductsAdapter(private val userId: String, private val products: MutableList<Product>, private val navController: NavController, val openProfile: (userId: String) -> Unit):
     RecyclerView.Adapter<BuyProductsAdapter.ViewHolder>() {
+    private val db = FirebaseFirestore.getInstance()
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -33,28 +36,38 @@ class BuyProductsAdapter(private val userId: Long, private val products: Mutable
 
         fun bind(product: Product) {
             binding.run {
-                DataBase.getUserById(product.userId)?.avatar?.let {
-                    avatarImage.setImageResource(it)
+                db.collection("users").get().addOnSuccessListener { data ->
+                    if (!data.isEmpty) {
+                        val docs = data.filter { it.id != userId }
+
+                        docs.forEach { doc ->
+                            val user = doc.toObject<User>()
+                            user.products.forEach { p ->
+                                if (p.id == product.id) {
+                                    avatarImage.setImageResource(user.avatar)
+                                    avatarImage.setOnClickListener {
+                                        openProfile(doc.id)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
-                avatarImage.setOnClickListener {
-                    openProfile(product.userId)
-                }
-
-                productImage.setImageURI(product.images[0])
+                Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(productImage)
                 nameText.text = product.name
                 priceText.text = product.price
 
-                addCartButton.addOnCheckedChangeListener { button, isChecked ->
-                    if(isChecked)
+                addCartButton.addOnCheckedChangeListener { _, isChecked ->
+                    /*if(isChecked)
                         DataBase.setToCart(userId, product.id)
-                    else DataBase.removeFromCart(userId, product.id)
+                    else DataBase.removeFromCart(userId, product.id)*/
                 }
 
-                addWishlistButton.addOnCheckedChangeListener { button, isChecked ->
-                    if(isChecked)
+                addWishlistButton.addOnCheckedChangeListener { _, isChecked ->
+                    /*if(isChecked)
                         DataBase.setToWishlist(userId, product.id)
-                    else DataBase.removeFromWishlist(userId, product.id)
+                    else DataBase.removeFromWishlist(userId, product.id)*/
                 }
             }
         }

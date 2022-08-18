@@ -4,11 +4,12 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(
     tableName = "hashtag",
 )
 data class Hashtag(
-    @PrimaryKey val id: Long = System.nanoTime(),
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "name") val name: String,
 )

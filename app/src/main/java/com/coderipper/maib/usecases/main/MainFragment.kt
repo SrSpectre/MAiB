@@ -1,6 +1,10 @@
 package com.coderipper.maib.usecases.main
 
-import android.app.Activity.RESULT_OK
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,17 +12,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.widget.ImageViewCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.getSystemService
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentMainBinding
+import com.coderipper.maib.models.session.User
+import com.coderipper.maib.usecases.login.LoginFragmentDirections
 import com.coderipper.maib.usecases.main.stories.StoryOptions
 import com.coderipper.maib.usecases.modals.createAvatarsModal
 import com.coderipper.maib.utils.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 
 /**
@@ -29,6 +41,8 @@ import com.google.android.material.textview.MaterialTextView
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     private lateinit var uname: String
     private lateinit var headerImage: AppCompatImageView
@@ -45,9 +59,24 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
+        val userId = getStringValue(requireActivity(), "id")!!
         uname = getStringValue(requireActivity(), "uname") ?: ""
         val imgId = getIntValue(requireActivity(), "avatar")
+
+        val channel = NotificationChannel("channel1", "Notf channel", NotificationManager.IMPORTANCE_DEFAULT)
+        channel.description = "description"
+        val notificationManager = requireActivity().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+
+        val builder = NotificationCompat.Builder(requireContext(), "channel1")
+            .setSmallIcon(R.drawable.notification_icon)
+            .setContentTitle("Hey! Volviste")
+            .setContentText("Crea mas ahora!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(requireContext())) {
+            notify(1, builder.build())
+        }
 
         binding.run {
             val header = menuNavigation.getHeaderView(0)
@@ -57,8 +86,17 @@ class MainFragment : Fragment() {
             headerImage = header.findViewById(R.id.avatar_selected)
             headerImage.setImageResource(imgId)
             header.findViewById<MaterialTextView>(R.id.user_name_text).text = getStringValue(requireActivity(), "name")
-            header.findViewById<MaterialTextView>(R.id.following_text).text = DataBase.getFollowersCount(userId).toString()
-            header.findViewById<MaterialTextView>(R.id.rate_text).text = DataBase.getUserById(userId)?.rate.toString()
+
+            db.collection("users").document(userId).get().addOnSuccessListener { data ->
+                if (data.exists()) {
+                    val user = data.toObject<User>()
+                    if (user != null) {
+                        header.findViewById<MaterialTextView>(R.id.following_text).text = user.followers.size.toString()
+                        header.findViewById<MaterialTextView>(R.id.rate_text).text = user.rate.toString()
+                    } else
+                        Snackbar.make(root, "Error con cuenta", Snackbar.LENGTH_SHORT).show()
+                }
+            }
 
             avatarBtn.setOnClickListener {
                 avatarsDialog = createAvatarsModal(requireContext(), ::selectedAvatar)
@@ -114,6 +152,7 @@ class MainFragment : Fragment() {
                     }
                     R.id.logout -> {
                         logout(requireActivity())
+                        FirebaseAuth.getInstance().signOut()
                         root.findNavController().navigate(MainFragmentDirections.toLogin())
                     }
                 }
@@ -124,9 +163,12 @@ class MainFragment : Fragment() {
     }
 
     private fun selectedAvatar(imgId: Int) {
+        val userId = getStringValue(requireActivity(), "id")!!
+
         binding.avatarSelected.setImageResource(imgId)
         headerImage.setImageResource(imgId)
         setIntValue(requireActivity(), "avatar", imgId)
+        db.collection("users").document(userId).update("avatar", imgId)
         avatarsDialog.dismiss()
     }
 

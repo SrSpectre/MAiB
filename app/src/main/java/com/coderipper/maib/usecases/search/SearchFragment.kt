@@ -7,20 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.findNavController
-import com.coderipper.maib.R
-import com.coderipper.maib.databinding.FragmentDashboardBinding
-import com.coderipper.maib.databinding.FragmentHomeBinding
-import com.coderipper.maib.databinding.FragmentMainBinding
 import com.coderipper.maib.databinding.FragmentSearchBinding
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.usecases.main.MainFragmentDirections
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.search.adapter.SearchProductsAdapter
-import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
-import com.google.android.material.snackbar.Snackbar
+import com.coderipper.maib.utils.getStringValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 /**
  * A simple [Fragment] subclass.
@@ -30,6 +25,8 @@ import com.google.android.material.snackbar.Snackbar
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     private lateinit var searchProductsAdapter: SearchProductsAdapter
     private val productsFound = arrayListOf<Product>()
@@ -45,8 +42,21 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
+        val userId = getStringValue(requireActivity(), "id")!!
         searchProductsAdapter = SearchProductsAdapter(userId, productsFound)
+
+        val products = ArrayList<Product>()
+
+        db.collection("users").get().addOnSuccessListener { data ->
+            if (!data.isEmpty) {
+                val docs = data.filter { it.id != userId }
+
+                docs.forEach { doc ->
+                    val user = doc.toObject<User>()
+                    products.addAll(user.products)
+                }
+            }
+        }
 
         binding.run {
             searchInput.requestFocus()
@@ -64,7 +74,11 @@ class SearchFragment : Fragment() {
 
             searchInput.addTextChangedListener {
                 productsFound.clear()
-                productsFound.addAll(DataBase.getProductsBySearch(it.toString().trim()))
+                if(it.toString().isNotEmpty()) {
+                    productsFound.addAll(products.filter { product ->
+                        product.name.lowercase().contains(it.toString().lowercase().trim())
+                    })
+                }
                 searchProductsAdapter.notifyDataSetChanged()
             }
         }

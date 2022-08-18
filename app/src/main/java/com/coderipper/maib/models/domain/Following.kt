@@ -4,12 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(
     tableName = "following",
 )
 data class Following(
-    @PrimaryKey val id: Long = System.nanoTime(),
-    @ColumnInfo(name = "user_id") val userId: Long,
-    @ColumnInfo(name = "follower_id") val followerId: Long,
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "user_id") val userId: String,
+    @ColumnInfo(name = "follower_id") val followerId: String,
 )

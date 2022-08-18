@@ -11,24 +11,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.Navigator
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentStoryOptionsBinding
 import com.coderipper.maib.databinding.StoryOptionsItemBinding
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.main.MainFragmentDirections
-import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.utils.getStringValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 class StoryOptions : BottomSheetDialogFragment() {
 
     private var _binding: FragmentStoryOptionsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,17 +37,22 @@ class StoryOptions : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val userId = getLongValue(requireActivity(), "id")
-        val videoUri = DataBase.getStoryFromUser(userId)
-
-        binding.list.layoutManager = LinearLayoutManager(context)
-        binding.list.adapter = ItemAdapter(if (videoUri.isNullOrEmpty()) 1 else 2)
+        val userId = getStringValue(requireActivity(), "id")!!
+        val doc = db.collection("users").document(userId)
+        doc.get().addOnSuccessListener { data ->
+            val user = data.toObject<User>()
+            if (user != null) {
+                val story = user.story
+                binding.list.layoutManager = LinearLayoutManager(context)
+                binding.list.adapter = ItemAdapter(if (story == null) 1 else 2)
+            }
+        }
     }
 
-    private inner class ViewHolder internal constructor(binding: StoryOptionsItemBinding) :
+    private inner class ViewHolder(binding: StoryOptionsItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        internal val text: TextView = binding.text
+        val text: TextView = binding.text
     }
 
     private inner class ItemAdapter internal constructor(private val mItemCount: Int) :
@@ -80,9 +83,15 @@ class StoryOptions : BottomSheetDialogFragment() {
             if (position == 1) {
                 holder.text.text = "Ver historia"
                 holder.text.setOnClickListener {
-                    val userId = getLongValue(requireActivity(), "id")
-                    val videoUri = DataBase.getStoryFromUser(userId)
-                    videoUri?.let { toVideo(videoUri, false, true) }
+                    val userId = getStringValue(requireActivity(), "id")!!
+                    val doc = db.collection("users").document(userId)
+                    doc.get().addOnSuccessListener { data ->
+                        val user = data.toObject<User>()
+                        if (user != null) {
+                            val story = user.story
+                            story?.let { toVideo(it.uri, controls = false, fromUser = true) }
+                        }
+                    }
                 }
             }
         }

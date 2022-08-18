@@ -7,10 +7,7 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FollowingItemBinding
-import com.coderipper.maib.databinding.MyProductsItemBinding
 import com.coderipper.maib.models.session.User
-import com.coderipper.maib.usecases.main.MainFragmentDirections
-import com.coderipper.maib.utils.DataBase
 
 class UserFollowingAdapter(private val following: List<User>, private val navController: NavController):
     RecyclerView.Adapter<UserFollowingAdapter.ViewHolder>() {
@@ -32,7 +29,7 @@ class UserFollowingAdapter(private val following: List<User>, private val navCon
 
         fun bind(user: User) {
             binding.run {
-                val product = DataBase.getProductByUserId(user.id)
+                /*val product = DataBase.getProductByUserId(user.id)
                 product?.let {
                     userImage.setImageURI(it.images[0])
                 }
@@ -44,7 +41,7 @@ class UserFollowingAdapter(private val following: List<User>, private val navCon
 
                 followingCard.setOnClickListener {
                     navController.navigate(MainFragmentDirections.toProfile(user.id))
-                }
+                }*/
             }
         }
     }

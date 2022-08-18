@@ -5,6 +5,7 @@
     android:layout_height="150dp"
     android:clickable="true"
     android:focusable="true"
+    android:visibility="gone"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="8dp"
     app:cardCornerRadius="0dp">

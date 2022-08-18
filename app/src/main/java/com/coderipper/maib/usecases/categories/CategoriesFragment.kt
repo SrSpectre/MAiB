@@ -10,11 +10,13 @@ import androidx.navigation.findNavController
 import com.coderipper.maib.databinding.FragmentCategoriesBinding
 import com.coderipper.maib.models.domain.Categories
 import com.coderipper.maib.models.domain.Product
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.categories.adapter.BuyProductsAdapter
-import com.coderipper.maib.utils.DataBase
 import com.coderipper.maib.utils.dpToPixels
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.utils.getStringValue
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 /**
  * A simple [Fragment] subclass.
@@ -25,10 +27,12 @@ class CategoriesFragment : Fragment() {
     private var _binding: FragmentCategoriesBinding? = null
     private val binding get() = _binding!!
 
+    private val db = FirebaseFirestore.getInstance()
+
     private var currentCategory = Categories.CLOSET
 
     private lateinit var productsAdapter: BuyProductsAdapter
-    private lateinit var products: MutableList<Product>
+    private val products = mutableListOf<Product>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,8 +45,23 @@ class CategoriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
-        products = DataBase.getBuyProducts(userId, currentCategory.ordinal)
+        val userId = getStringValue(requireActivity(), "id")!!
+        products.clear()
+        db.collection("users").get().addOnSuccessListener { data ->
+            if (!data.isEmpty) {
+                val docs = data.filter { it.id != userId }
+
+                docs.forEach { doc ->
+                    val user = doc.toObject<User>()
+                    val allProducts = arrayListOf<Product>()
+                    allProducts.addAll(user.products)
+                    products.addAll(allProducts.filter { product ->
+                        product.category == currentCategory.ordinal
+                    })
+                    productsAdapter.notifyDataSetChanged()
+                }
+            }
+        }
 
         binding.run {
             productsAdapter = BuyProductsAdapter(userId, products, root.findNavController(), ::openProfile)
@@ -110,16 +129,31 @@ class CategoriesFragment : Fragment() {
         }
     }
 
-    private fun openProfile(userId: Long) {
+
+    private fun openProfile(userId: String) {
         binding.root.findNavController().navigate(CategoriesFragmentDirections.toProfile(userId))
     }
 
     private fun hideBackDroop() {
-        val userId = getLongValue(requireActivity(), "id")
+        val userId = getStringValue(requireActivity(), "id")!!
+
+        products.clear()
+        db.collection("users").get().addOnSuccessListener { data ->
+            if (!data.isEmpty) {
+                val docs = data.filter { it.id != userId }
+
+                docs.forEach { doc ->
+                    val user = doc.toObject<User>()
+                    val allProducts = arrayListOf<Product>()
+                    allProducts.addAll(user.products)
+                    products.addAll(allProducts.filter { product ->
+                        product.category == currentCategory.ordinal
+                    })
+                    productsAdapter.notifyDataSetChanged()
+                }
+            }
+        }
         binding.run {
-            products.clear()
-            products.addAll(DataBase.getBuyProducts(userId, currentCategory.ordinal))
-            productsAdapter.notifyDataSetChanged()
             frontCard.translationY = 0F
             frontScrim.isVisible = false
         }

@@ -4,18 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.coderipper.maib.MainNavGraphDirections
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentHomeBinding
-import com.coderipper.maib.usecases.categories.CategoriesFragmentDirections
+import com.coderipper.maib.models.domain.Product
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.main.MainFragmentDirections
 import com.coderipper.maib.usecases.main.home.adapter.RecommendationsAdapter
-import com.coderipper.maib.utils.DataBase
 import com.coderipper.maib.utils.getBooleanValue
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.utils.getStringValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.squareup.picasso.Picasso
+import kotlin.random.Random
 
 /**
  * A simple [Fragment] subclass.
@@ -25,6 +30,8 @@ import com.coderipper.maib.utils.getLongValue
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,14 +44,40 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
-        val promotionalId = setPromotionalCard(userId)
-        val productsList = DataBase.getRecommendations(userId, promotionalId)
+        val userId = getStringValue(requireActivity(), "id")!!
+        val productsList = ArrayList<Product>()
+
+        db.collection("users").get().addOnSuccessListener { data ->
+            if (!data.isEmpty) {
+                val docs = data.filter { it.id != userId }
+
+                val products = arrayListOf<Product>()
+                docs.forEach { doc ->
+                    val user = doc.toObject<User>()
+                    products.addAll(user.products)
+                }
+
+                if (products.isNotEmpty()) {
+                    if (products.size > 1) {
+                        val promotional = products[Random.nextInt(0, products.size -1)]
+                        products.remove(promotional)
+                        setPromotionalCard(userId, promotional)
+
+                        val times = if (products.size > 10) 10 else products.size
+                        repeat(times) {
+                            productsList.add(products[it])
+                        }
+                    } else
+                        setPromotionalCard(userId, products[0])
+                } else
+                    binding.promotionLayout.promotionalCard.isVisible = false
+            }
+            binding.recommendationsList.adapter = RecommendationsAdapter(userId, productsList)
+        }
 
         binding.run {
             recommendationsList.apply {
                 setHasFixedSize(false)
-                adapter = RecommendationsAdapter(userId, productsList)
                 isVisible = getBooleanValue(requireContext(), "home_recomm")
             }
 
@@ -70,28 +103,27 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setPromotionalCard(userId: Long): Long {
-        val product = DataBase.getPromotional(userId)
-        val user = DataBase.getUserById(product.userId)
+    private fun setPromotionalCard(userId: String, product: Product): String {
         binding.promotionLayout.run {
             promotionalCard.isVisible = getBooleanValue(requireContext(), "promotional")
-            promotionImage.setImageURI(product.images[0])
-            titleText.text = "¡${user?.name} tiene una nueva creación!"
+            Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(promotionImage)
+            titleText.text = "¡Hay una nueva creación!"
             priceText.text = "$${product.price}"
 
-            addCartButton.addOnCheckedChangeListener { button, isChecked ->
-                if(isChecked)
+            addCartButton.addOnCheckedChangeListener { _, isChecked ->
+                /*if(isChecked)
                     DataBase.setToCart(userId, product.id)
-                else DataBase.removeFromCart(userId, product.id)
+                else DataBase.removeFromCart(userId, product.id)*/
             }
 
-            addWishlistButton.addOnCheckedChangeListener { button, isChecked ->
-                if(isChecked)
+            addWishlistButton.addOnCheckedChangeListener { _, isChecked ->
+                /*if(isChecked)
                     DataBase.setToWishlist(userId, product.id)
-                else DataBase.removeFromWishlist(userId, product.id)
+                else DataBase.removeFromWishlist(userId, product.id)*/
             }
         }
         return product.id
+        return ""
     }
 
     override fun onDestroyView() {

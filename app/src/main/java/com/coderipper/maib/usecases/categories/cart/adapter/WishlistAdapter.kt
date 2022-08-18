@@ -3,16 +3,15 @@ package com.coderipper.maib.usecases.categories.cart.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.CartItemBinding
-import com.coderipper.maib.databinding.RecommendationsItemBinding
-import com.coderipper.maib.databinding.SizesItemBinding
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.utils.DataBase
+import com.squareup.picasso.Picasso
 
-class WishlistAdapter(private val products: MutableList<Product>, private val removeWishlistProduct: (productId: Long) -> Unit):
+class WishlistAdapter(private val products: MutableList<Product>, private val removeWishlistProduct: (productId: String) -> Unit):
     RecyclerView.Adapter<WishlistAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,7 +31,7 @@ class WishlistAdapter(private val products: MutableList<Product>, private val re
 
         fun bind(product: Product) {
             binding.run {
-                productImage.setImageURI(product.images[0])
+                Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(productImage)
                 titleText.text = product.name
                 priceText.text = product.price
                 sizesSpinner.isVisible = false

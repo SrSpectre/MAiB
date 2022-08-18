@@ -25,10 +25,6 @@
         android:name="com.coderipper.maib.usecases.signin.SignInFragment"
         android:label="Sign In"
         tools:layout="@layout/fragment_sign_in">
-
-        <action
-            android:id="@+id/to_home"
-            app:destination="@id/main_fragment"/>
     </fragment>
 
     <fragment
@@ -104,8 +100,8 @@
 
         <argument
             android:name="userId"
-            app:argType="long"
-            android:defaultValue="-1L" />
+            app:argType="string"
+            android:defaultValue="" />
 
         <action
             android:id="@+id/to_profile"

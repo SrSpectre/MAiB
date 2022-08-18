@@ -1,6 +1,7 @@
 package com.coderipper.maib.usecases.create
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -15,21 +16,21 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.coderipper.maib.databinding.FragmentCreateProductBinding
-import com.coderipper.maib.models.domain.Categories
-import com.coderipper.maib.models.domain.ColorEntity
-import com.coderipper.maib.models.domain.Size
+import com.coderipper.maib.models.domain.*
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.create.adapter.ImageAdapter
 import com.coderipper.maib.usecases.create.colors.CreateColorsFragment
 import com.coderipper.maib.usecases.create.colors.adapter.ColorsAdapter
 import com.coderipper.maib.usecases.create.sizes.CreateSizesFragment
 import com.coderipper.maib.usecases.create.sizes.adapter.SizesAdapter
-import com.coderipper.maib.usecases.profile.ProfileFragmentArgs
 import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.utils.getStringValue
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
-import kotlin.collections.ArrayList
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.storage.FirebaseStorage
 import kotlin.properties.Delegates
+
 
 /**
  * A simple [Fragment] subclass.
@@ -40,6 +41,8 @@ class CreateProductFragment : Fragment() {
     private var _binding: FragmentCreateProductBinding? = null
     private val binding get() = _binding!!
 
+    private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
     private val args: CreateProductFragmentArgs by navArgs()
 
     private val imageList = arrayListOf<Uri?>(null)
@@ -127,48 +130,78 @@ class CreateProductFragment : Fragment() {
     }
 
     private fun createProduct() {
-        val userId = getLongValue(requireActivity(), "id")
+        val userId = getStringValue(requireActivity(), "id")!!
         binding.run {
             val name = nameText.text.toString().trim()
             val price = priceText.text.toString().trim()
             val description = descriptionText.text.toString().trim()
 
             if(name.isNotEmpty() && description.isNotEmpty() && price.isNotEmpty() && imageList.size > 1) {
-                val images = arrayListOf<Uri>()
-                imageList.forEach {
-                    it?.let { images.add(it) }
-                }
-
                 if(currentCategory == Categories.CLOSET.ordinal && sizesList.isEmpty() && colorsList.isEmpty()) {
                     Snackbar.make(root, "Faltan tamaños o colores", Snackbar.LENGTH_SHORT).show()
                     return
                 }
 
-                if(currentCategory == Categories.CLOSET.ordinal) {
+                val product = if(currentCategory == Categories.CLOSET.ordinal) {
                     val sizesList = ArrayList<Size>()
                     sizes.forEach { sizesList.add(Size(size = it)) }
 
                     val colorsList = ArrayList<ColorEntity>()
                     colors.forEach { colorsList.add(ColorEntity(color = Color.rgb(it.first, it.second, it.third))) }
-                    DataBase.setProduct(
-                        userId,
-                        name,
-                        price,
-                        description,
-                        currentCategory,
-                        images,
-                        sizesList,
-                        colorsList
+                    Product(
+                        name = name,
+                        price = price,
+                        description = description,
+                        category = currentCategory,
+                        sizes = sizesList,
+                        colors = colorsList
                     )
                 } else {
-                    DataBase.setProduct(
-                        userId,
-                        name,
-                        price,
-                        description,
-                        currentCategory,
-                        images
+                    Product(
+                        name = name,
+                        price = price,
+                        description = description,
+                        category = currentCategory,
                     )
+                }
+
+                val progressDialog = ProgressDialog(requireContext())
+                val doc = db.collection("users").document(userId)
+                doc.get().addOnSuccessListener { data ->
+                    if(data.exists()) {
+                        val user = data.toObject<User>()
+                        if (user != null) {
+                            user.products.add(product)
+                            doc.update("products", user.products)
+
+                            imageList.forEach { imageUri ->
+                                imageUri?.let { uri ->
+                                    progressDialog.setMessage("Creando producto...")
+                                    progressDialog.setCancelable(false)
+                                    progressDialog.show()
+                                    val location = "images/${System.nanoTime()}"
+                                    val ref = storage.getReference(location)
+                                    ref.putFile(uri).addOnSuccessListener { task ->
+                                        task.storage.downloadUrl.addOnSuccessListener { uploadedUri ->
+                                            val updateProduct = user.products.first { p -> p.id == product.id }
+                                            user.products.remove(updateProduct)
+                                            updateProduct.images.add(Image(location, uploadedUri.toString()))
+                                            user.products.add(updateProduct)
+                                            doc.update("products", user.products)
+                                        }
+                                        if (progressDialog.isShowing)
+                                            progressDialog.dismiss()
+                                    }.addOnFailureListener {
+                                        println(it.message)
+                                        if (progressDialog.isShowing)
+                                            progressDialog.dismiss()
+                                    }
+                                }
+                            }
+                        } else
+                            Snackbar.make(root, "Error con cuenta", Snackbar.LENGTH_SHORT).show()
+                    } else
+                        Snackbar.make(root, "Error al recuperar información del servidor", Snackbar.LENGTH_SHORT).show()
                 }
                 root.findNavController().popBackStack()
             } else {

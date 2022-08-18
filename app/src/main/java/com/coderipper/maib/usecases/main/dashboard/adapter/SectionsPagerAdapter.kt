@@ -12,7 +12,7 @@ import com.coderipper.maib.databinding.DashboardSectionsItemBinding
 import com.coderipper.maib.models.domain.Product
 import com.coderipper.maib.models.session.User
 
-class SectionsPagerAdapter(private val sections: ArrayList<MutableList<Any>>, private val navController: NavController):
+class SectionsPagerAdapter(private val userId: String, private val sections: ArrayList<MutableList<Any>>, private val navController: NavController):
     RecyclerView.Adapter<SectionsPagerAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,7 +35,7 @@ class SectionsPagerAdapter(private val sections: ArrayList<MutableList<Any>>, pr
         fun bindProducts(products: MutableList<Product>) {
             binding.elementsList.apply {
                 setHasFixedSize(false)
-                adapter = UserProductsAdapter(context, products, navController)
+                adapter = UserProductsAdapter(userId, context, products)
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }

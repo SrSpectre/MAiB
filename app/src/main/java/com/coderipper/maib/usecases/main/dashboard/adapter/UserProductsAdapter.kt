@@ -1,25 +1,32 @@
 package com.coderipper.maib.usecases.main.dashboard.adapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.ListPopupWindow
-import androidx.navigation.NavController
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Database
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.MyProductsItemBinding
-import com.coderipper.maib.databinding.RecommendationsItemBinding
-import com.coderipper.maib.databinding.SizesItemBinding
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.utils.DataBase
+import com.coderipper.maib.models.session.User
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 
-class UserProductsAdapter(private val context: Context, private val products: MutableList<Product>, private val navController: NavController):
+class UserProductsAdapter(
+    private val userId: String,
+    private val context: Context,
+    private val products: MutableList<Product>
+):
     RecyclerView.Adapter<UserProductsAdapter.ViewHolder>() {
+    private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -38,7 +45,7 @@ class UserProductsAdapter(private val context: Context, private val products: Mu
 
         fun bind(product: Product) {
             binding.run {
-                productImage.setImageURI(product.images[0])
+                Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(productImage)
                 nameText.text = product.name
                 priceText.text = product.price
 
@@ -46,20 +53,28 @@ class UserProductsAdapter(private val context: Context, private val products: Mu
 
                 listPopupWindow.anchorView = recommendationsList
 
-                val stock = if(product.stock) "No stock" else "Stock"
-
-                val items = listOf("Delete", stock)
+                val items = listOf("Delete")
                 val adapter = ArrayAdapter(context, R.layout.mini_sizes_item, items)
                 listPopupWindow.setAdapter(adapter)
-                listPopupWindow.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+                listPopupWindow.setOnItemClickListener { _: AdapterView<*>?, _: View?, position: Int, _: Long ->
                     val index = products.indexOf(product)
                     if (position == 0) {
-                        DataBase.removeProduct(product.userId, product.id)
+                        db.collection("users").document(userId).get().addOnSuccessListener { data ->
+                            if(data.exists()) {
+                                val user = data.toObject<User>()
+                                if (user != null) {
+                                    val p = user.products.first { it.id == product.id }
+                                    user.products.remove(p)
+                                    val storageRef = storage.reference
+                                    p.images.forEach { image ->
+                                        storageRef.child(image.id).delete()
+                                        db.collection("users").document(userId).update("products", user.products)
+                                    }
+                                }
+                            }
+                        }
                         products.remove(product)
                         notifyItemRemoved(index)
-                    } else {
-                        DataBase.updateStock(product.id, !product.stock)
-                        notifyItemChanged(index)
                     }
                     listPopupWindow.dismiss()
                 }

@@ -3,13 +3,14 @@ package com.coderipper.maib.usecases.main.home.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.RecommendationsItemBinding
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.utils.DataBase
+import com.squareup.picasso.Picasso
 
-class RecommendationsAdapter(private val userId: Long, private val products: List<Product>):
+class RecommendationsAdapter(private val userId: String, private val products: List<Product>):
     RecyclerView.Adapter<RecommendationsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,18 +31,18 @@ class RecommendationsAdapter(private val userId: Long, private val products: Lis
         fun bind(product: Product) {
             binding.run {
                 titleText.text = product.name
-                recommendationImage.setImageURI(product.images[0])
+                Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(recommendationImage)
 
-                addCartButton.addOnCheckedChangeListener { button, isChecked ->
-                    if(isChecked)
+                addCartButton.addOnCheckedChangeListener { _, isChecked ->
+                    /*if(isChecked)
                         DataBase.setToCart(userId, product.id)
-                    else DataBase.removeFromCart(userId, product.id)
+                    else DataBase.removeFromCart(userId, product.id)*/
                 }
 
-                addWishlistButton.addOnCheckedChangeListener { button, isChecked ->
-                    if(isChecked)
+                addWishlistButton.addOnCheckedChangeListener { _, isChecked ->
+                    /*if(isChecked)
                         DataBase.setToWishlist(userId, product.id)
-                    else DataBase.removeFromWishlist(userId, product.id)
+                    else DataBase.removeFromWishlist(userId, product.id)*/
                 }
             }
         }

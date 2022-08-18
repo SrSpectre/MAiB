@@ -7,10 +7,7 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.*
-import com.coderipper.maib.models.domain.Product
 import com.coderipper.maib.models.session.User
-import com.coderipper.maib.usecases.main.MainFragmentDirections
-import com.coderipper.maib.utils.DataBase
 
 class MoreArtistsAdapter(private val users: List<User>, private val navController: NavController):
     RecyclerView.Adapter<MoreArtistsAdapter.ViewHolder>() {
@@ -32,7 +29,7 @@ class MoreArtistsAdapter(private val users: List<User>, private val navControlle
 
         fun bind(user: User) {
             binding.run {
-                val product = DataBase.getProductByUserId(user.id)
+                /*val product = DataBase.getProductByUserId(user.id)
                 product?.let {
                     userImage.setImageURI(it.images[0])
                 }
@@ -42,7 +39,7 @@ class MoreArtistsAdapter(private val users: List<User>, private val navControlle
 
                 artistCard.setOnClickListener {
                     navController.navigate(MainFragmentDirections.toProfile(user.id))
-                }
+                }*/
             }
         }
     }

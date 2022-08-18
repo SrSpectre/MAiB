@@ -3,17 +3,14 @@ package com.coderipper.maib.usecases.search.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.NavController
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.BigProductsItemBinding
-import com.coderipper.maib.databinding.MyProductsItemBinding
-import com.coderipper.maib.databinding.RecommendationsItemBinding
-import com.coderipper.maib.databinding.SizesItemBinding
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.utils.DataBase
+import com.squareup.picasso.Picasso
 
-class SearchProductsAdapter(private val userId: Long, private val products: List<Product>):
+class SearchProductsAdapter(private val userId: String, private val products: List<Product>):
     RecyclerView.Adapter<SearchProductsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -34,19 +31,19 @@ class SearchProductsAdapter(private val userId: Long, private val products: List
         fun bind(product: Product) {
             binding.run {
                 nameText.text = product.name
-                productImage.setImageURI(product.images[0])
+                Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(productImage)
                 nameText.text = product.name
 
-                addCartButton.addOnCheckedChangeListener { button, isChecked ->
-                    if(isChecked)
+                addCartButton.addOnCheckedChangeListener { _, isChecked ->
+                    /*if(isChecked)
                         DataBase.setToCart(userId, product.id)
-                    else DataBase.removeFromCart(userId, product.id)
+                    else DataBase.removeFromCart(userId, product.id)*/
                 }
 
-                addWishlistButton.addOnCheckedChangeListener { button, isChecked ->
-                    if(isChecked)
+                addWishlistButton.addOnCheckedChangeListener { _, isChecked ->
+                    /*if(isChecked)
                         DataBase.setToWishlist(userId, product.id)
-                    else DataBase.removeFromWishlist(userId, product.id)
+                    else DataBase.removeFromWishlist(userId, product.id)*/
                 }
             }
         }

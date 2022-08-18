@@ -1,24 +1,21 @@
 package com.coderipper.maib.models.session
 
-import android.net.Uri
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import com.coderipper.maib.models.domain.Product
+import com.coderipper.maib.models.domain.Story
 
-@Entity(
-    tableName = "users",
-    indices = [Index(value = ["phone", "email"], unique = true)]
-)
 data class User(
-    @PrimaryKey val id: Long = System.nanoTime(),
-    @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "last") val last: String,
-    @ColumnInfo(name = "description") var description: String = "¡Hola, soy nuevo!",
-    @ColumnInfo(name = "phone") var phone: String,
-    @ColumnInfo(name = "email") var email: String,
-    @ColumnInfo(name = "password") var password: String,
-    @ColumnInfo(name = "rate") val rate: Float = 1F,
-    @ColumnInfo(name = "avatar") val avatar: Int,
-    @ColumnInfo(name = "story") var story: String = "",
+    val name: String = "",
+    val last: String = "",
+    var description: String = "¡Hola, soy nuevo!",
+    var phone: String = "",
+    var email: String = "",
+    var password: String = "",
+    val rate: Float = 1F,
+    val avatar: Int = -1,
+    var story: Story? = null,
+    val cart: ArrayList<String> = ArrayList(),
+    val wishlist: ArrayList<String> = ArrayList(),
+    val following: ArrayList<String> = ArrayList(),
+    val followers: ArrayList<String> = ArrayList(),
+    val products: ArrayList<Product> = ArrayList()
 )

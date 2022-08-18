@@ -6,15 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.CartItemBinding
-import com.coderipper.maib.databinding.RecommendationsItemBinding
-import com.coderipper.maib.databinding.SizesItemBinding
 import com.coderipper.maib.models.domain.Product
-import com.coderipper.maib.utils.DataBase
+import com.squareup.picasso.Picasso
 
-class CartAdapter(private val context: Context, private val products: MutableList<Product>, private val removeCartProduct: (productId: Long) -> Unit):
+class CartAdapter(private val context: Context, private val products: MutableList<Product>, private val removeCartProduct: (productId: String) -> Unit):
     RecyclerView.Adapter<CartAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -34,7 +33,7 @@ class CartAdapter(private val context: Context, private val products: MutableLis
 
         fun bind(product: Product) {
             binding.run {
-                productImage.setImageURI(product.images[0])
+                Picasso.with(binding.root.context).load(product.images[0].uri.toUri()).into(productImage)
                 titleText.text = product.name
                 priceText.text = product.price
 

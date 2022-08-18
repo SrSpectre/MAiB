@@ -15,6 +15,7 @@ import com.coderipper.maib.databinding.FragmentHomeBinding
 import com.coderipper.maib.databinding.FragmentMainBinding
 import com.coderipper.maib.models.domain.Cart
 import com.coderipper.maib.models.domain.Product
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.categories.cart.adapter.CartAdapter
 import com.coderipper.maib.usecases.categories.cart.adapter.WishlistAdapter
 import com.coderipper.maib.usecases.main.MainFragmentDirections
@@ -22,6 +23,8 @@ import com.coderipper.maib.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 /**
  * A simple [Fragment] subclass.
@@ -31,6 +34,8 @@ import com.google.android.material.snackbar.Snackbar
 class CartFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     private lateinit var cartAdapter: CartAdapter
     private lateinit var wishlistAdapter: WishlistAdapter
@@ -48,7 +53,7 @@ class CartFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
+        val userId = getStringValue(requireActivity(), "id")!!
 
         binding.run {
             val bottomSheet = BottomSheetBehavior.from(cartCard)
@@ -108,29 +113,67 @@ class CartFragment : BottomSheetDialogFragment() {
         } else clearFields()
     }
 
-    private fun removeCartProduct(productId: Long) {
-        val userId = getLongValue(requireActivity(), "id")
-        DataBase.removeFromCart(userId, productId)
+    private fun removeCartProduct(productId: String) {
+        val userId = getStringValue(requireActivity(), "id")!!
+        //DataBase.removeFromCart(userId, productId)
         loadCart(userId)
     }
 
-    private fun loadCart(userId: Long) {
+    private fun loadCart(userId: String) {
         cartList.clear()
-        cartList.addAll(DataBase.getCartByUserId(userId))
-        cartAdapter.notifyDataSetChanged()
+        db.collection("users").document(userId).get().addOnSuccessListener { data ->
+            val user = data.toObject<User>()
+            if (user != null) {
+                db.collection("users").get().addOnSuccessListener { data1 ->
+                    if (!data1.isEmpty) {
+                        val docs = data1.filter { it.id != userId }
+
+                        val products = arrayListOf<Product>()
+                        docs.forEach { doc ->
+                            val user1 = doc.toObject<User>()
+                            products.addAll(user1.products)
+                        }
+                        products.forEach { product ->
+                            if (user.cart.contains(product.id))
+                                cartList.add(product)
+                        }
+                        cartAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        }
         calculateCosts()
     }
 
-    private fun removeWishlistProduct(productId: Long) {
-        val userId = getLongValue(requireActivity(), "id")
-        DataBase.removeFromWishlist(userId, productId)
+    private fun removeWishlistProduct(productId: String) {
+        val userId = getStringValue(requireActivity(), "id")!!
+        //DataBase.removeFromWishlist(userId, productId)
         loadWishlist(userId)
     }
 
-    private fun loadWishlist(userId: Long) {
+    private fun loadWishlist(userId: String) {
         wishlist.clear()
-        wishlist.addAll(DataBase.getWishlistByUserId(userId))
-        wishlistAdapter.notifyDataSetChanged()
+        db.collection("users").document(userId).get().addOnSuccessListener { data ->
+            val user = data.toObject<User>()
+            if (user != null) {
+                db.collection("users").get().addOnSuccessListener { data1 ->
+                    if (!data1.isEmpty) {
+                        val docs = data1.filter { it.id != userId }
+
+                        val products = arrayListOf<Product>()
+                        docs.forEach { doc ->
+                            val user1 = doc.toObject<User>()
+                            products.addAll(user1.products)
+                        }
+                        products.forEach { product ->
+                            if (user.wishlist.contains(product.id))
+                                wishlist.add(product)
+                        }
+                        wishlistAdapter.notifyDataSetChanged()
+                    }
+                }
+            }
+        }
     }
 
     inner class CartSheetCallback(private val visibleHeight: Float): BottomSheetBehavior.BottomSheetCallback() {

@@ -1,26 +1,22 @@
 package com.coderipper.maib.usecases.main.dashboard
 
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.coderipper.maib.R
 import com.coderipper.maib.databinding.FragmentDashboardBinding
-import com.coderipper.maib.databinding.FragmentHomeBinding
-import com.coderipper.maib.databinding.FragmentMainBinding
-import com.coderipper.maib.models.domain.Product
+import com.coderipper.maib.models.session.User
 import com.coderipper.maib.usecases.main.MainFragmentDirections
 import com.coderipper.maib.usecases.main.dashboard.adapter.SectionsPagerAdapter
-import com.coderipper.maib.utils.DataBase
-import com.coderipper.maib.utils.getLongValue
+import com.coderipper.maib.utils.getStringValue
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 
 /**
  * A simple [Fragment] subclass.
@@ -30,6 +26,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
+
+    private val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,23 +40,17 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val userId = getLongValue(requireActivity(), "id")
-        val products = DataBase.getProductsByUserId(userId) as MutableList<Any>
-        val following = DataBase.getFollowing(userId) as MutableList<Any>
+        val userId = getStringValue(requireActivity(), "id")!!
         val navController = activity?.findNavController(R.id.nav_host_fragment)
         binding.run {
             if(navController == null)
                 root.findNavController().popBackStack()
 
-            followingText.text = DataBase.getFollowersCount(userId).toString()
-            val rate = DataBase.getUserById(userId)?.rate.toString()
-            rateText.text = rate.ifEmpty { "1.0" }
-
             createProductFab.setOnClickListener {
                 val items = arrayOf("Closet", "Arte Digital", "Pinturas", "Interiores", "Esculturas", "Libros", "Sin categoria")
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Categoria")
-                    .setItems(items) { dialog, which ->
+                    .setItems(items) { _, which ->
                         navController?.navigate(MainFragmentDirections.toCreate(which))
                     }
                     .show()
@@ -66,19 +58,31 @@ class DashboardFragment : Fragment() {
 
 
             sectionsPager.apply {
-                adapter = SectionsPagerAdapter(arrayListOf(products, following), navController!!)
                 clipToPadding = false
                 clipChildren = false
                 offscreenPageLimit = 2
                 getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
             }
 
-            TabLayoutMediator(sectionsTab, sectionsPager) { tab, position ->
-                when (position) {
-                    0 -> tab.text = "Mis productos"
-                    1 -> tab.text = "Siguiendo"
+            db.collection("users").document(userId).get().addOnSuccessListener { data ->
+                if (data.exists()) {
+                    val user = data.toObject<User>()
+                    if (user != null) {
+                        followingText.text = user.followers.size.toString()
+                        rateText.text = user.rate.toString()
+                        sectionsPager.adapter = SectionsPagerAdapter(userId, arrayListOf(user.products.toMutableList(), user.following.toMutableList()), navController!!)
+                        sectionsPager.adapter?.notifyDataSetChanged()
+                        TabLayoutMediator(sectionsTab, sectionsPager) { tab, position ->
+                            when (position) {
+                                0 -> tab.text = "Mis productos"
+                                1 -> tab.text = "Siguiendo: " + user.following.size
+                            }
+                        }.attach()
+                    }
+                    else
+                        Snackbar.make(root, "Error con cuenta", Snackbar.LENGTH_SHORT).show()
                 }
-            }.attach()
+            }
         }
     }
 
